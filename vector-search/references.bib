@@ -1,0 +1,43 @@
+@article{MALKOV201461,
+  title    = {Approximate nearest neighbor algorithm based on navigable small world graphs},
+  journal  = {Information Systems},
+  volume   = {45},
+  pages    = {61-68},
+  year     = {2014},
+  issn     = {0306-4379},
+  doi      = {https://doi.org/10.1016/j.is.2013.10.006},
+  url      = {https://www.sciencedirect.com/science/article/pii/S0306437913001300},
+  author   = {Yury Malkov and Alexander Ponomarenko and Andrey Logvinov and Vladimir Krylov},
+  keywords = {Similarity search, k-Nearest neighbor, Approximate nearest neighbor, Navigable small world, Distributed data structure},
+  abstract = {We propose a novel approach to solving the approximate k-nearest neighbor search problem in metric spaces. The search structure is based on a navigable small world graph with vertices corresponding to the stored elements, edges to links between them, and a variation of greedy algorithm for searching. The navigable small world is created simply by keeping old Delaunay graph approximation links produced at the start of construction. The approach is very universal, defined in terms of arbitrary metric spaces and at the same time it is very simple. The algorithm handles insertions in the same way as queries: by finding approximate neighbors for the inserted element and connecting it to them. Both search and insertion can be done in parallel requiring only local information from the structure. The structure can be made distributed. The accuracy of the probabilistic k-nearest neighbor queries can be adjusted without rebuilding the structure. The performed simulation for data in the Euclidean spaces shows that the structure built using the proposed algorithm has small world navigation properties with log2(n) insertion and search complexity at fixed accuracy, and performs well at high dimensionality. Simulation on a CoPHiR dataset revealed its high efficiency in case of large datasets (more than an order of magnitude less metric computations at fixed recall) compared to permutation indexes. Only 0.03% of the 10 million 208-dimensional vector dataset is needed to be evaluated to achieve 0.999 recall (virtually exact search). For recall 0.93 processing speed 2800queries/s can be achieved on a dual Intel X5675 Xenon server node with Java implementation.}
+}
+
+@article{8594636,
+  author   = {Malkov, Yu A. and Yashunin, D. A.},
+  journal  = {IEEE Transactions on Pattern Analysis and Machine Intelligence},
+  title    = {Efficient and Robust Approximate Nearest Neighbor Search Using Hierarchical Navigable Small World Graphs},
+  year     = {2020},
+  volume   = {42},
+  number   = {4},
+  pages    = {824-836},
+  keywords = {Routing;Complexity theory;Search problems;Data models;Approximation algorithms;Biological system modeling;Brain modeling;Graph and tree search strategies;artificial intelligence;information search and retrieval;information storage and retrieval;information technology and systems;search process;graphs and networks;data structures;nearest neighbor search;big data;approximate search;similarity search},
+  doi      = {10.1109/TPAMI.2018.2889473}
+}
+
+@article{10.14778/3303753.3303754,
+  author     = {Fu, Cong and Xiang, Chao and Wang, Changxu and Cai, Deng},
+  title      = {Fast approximate nearest neighbor search with the navigating spreading-out graph},
+  year       = {2019},
+  issue_date = {January 2019},
+  publisher  = {VLDB Endowment},
+  volume     = {12},
+  number     = {5},
+  issn       = {2150-8097},
+  url        = {https://doi.org/10.14778/3303753.3303754},
+  doi        = {10.14778/3303753.3303754},
+  abstract   = {Approximate nearest neighbor search (ANNS) is a fundamental problem in databases and data mining. A scalable ANNS algorithm should be both memory-efficient and fast. Some early graph-based approaches have shown attractive theoretical guarantees on search time complexity, but they all suffer from the problem of high indexing time complexity. Recently, some graph-based methods have been proposed to reduce indexing complexity by approximating the traditional graphs; these methods have achieved revolutionary performance on million-scale datasets. Yet, they still can not scale to billion-node databases. In this paper, to further improve the search-efficiency and scalability of graph-based methods, we start by introducing four aspects: (1) ensuring the connectivity of the graph; (2) lowering the average out-degree of the graph for fast traversal; (3) shortening the search path; and (4) reducing the index size. Then, we propose a novel graph structure called Monotonic Relative Neighborhood Graph (MRNG) which guarantees very low search complexity (close to logarithmic time). To further lower the indexing complexity and make it practical for billion-node ANNS problems, we propose a novel graph structure named Navigating Spreading-out Graph (NSG) by approximating the MRNG. The NSG takes the four aspects into account simultaneously. Extensive experiments show that NSG outperforms all the existing algorithms significantly. In addition, NSG shows superior performance in the E-commercial scenario of Taobao (Alibaba Group) and has been integrated into their billion-scale search engine.},
+  journal    = {Proc. VLDB Endow.},
+  month      = jan,
+  pages      = {461–474},
+  numpages   = {14}
+}
