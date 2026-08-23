@@ -301,7 +301,7 @@ $
     $italic("neighbors") <- italic("selectNeighbors")(p_"new", italic("nns"), italic("new_edge_num"))$ \
     $V(italic("layers")_l) <- V(italic("layers")_l) union {p_"new"}$ \
     for $italic("neighbor") in italic("neighbors")$: #i \
-    $E(italic("layers")_l) <- E(italic("layers")_l) union {{p_"new", italic("neighbor")}}$ \
+    $E(italic("layers")_l) <- E(italic("layers")_l) union {(p_"new", italic("neighbor")), (italic("neighbor"), p_"new")}$ \
     if $deg italic("neighbor") > italic("deg_lim")$: #i \
     $italic("neighbor").italic("adjs") <- italic("selectNeighbors")(italic("layers")_l, italic("neighbor"), italic("neighbor").italic("adjs"), italic("deg_lim"))$ #d #d \
     $italic("entries") <- italic("nns")$ #d \
