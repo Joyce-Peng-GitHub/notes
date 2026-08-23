@@ -1,6 +1,6 @@
 #import "@preview/ctheorems:1.1.3": *
 #show: thmrules
-#import "@preview/algo:0.3.6": algo, code, comment, d, i
+#import "@preview/algo:0.3.6": algo, code, comment, d, i, no-emph
 
 #let definition = thmbox("definition", "定义")
 #let theorem = thmbox("theorem", "定理")
@@ -10,6 +10,7 @@
 
 #let powset = math.op(math.scr("P"))
 #let chev(..args) = $lr(chevron.l #args.pos().join($,$) chevron.r)$
+#let prob(..args) = $PP(#args.pos().join($,$))$
 
 #let en-font = "New Computer Modern"
 #let cn-font-body = "Noto Serif SC"
@@ -30,6 +31,7 @@
   link(dest, text(fill: rgb("#1a73e8"), content))
 }
 
+#let algo-keywords = ("func", "if", "else", "for", "while", "break", "continue", "return", "let")
 
 #align(center)[
   #text(font: (en-font, cn-font-heading), size: 2em)[
@@ -53,7 +55,7 @@
     - 唯一性：$delta(x, y) = 0 <=> x = y$。
     - 对称性：$delta(x, y) = d(y, x)$。
     - 三角不等式：$delta(x, z) <= delta(x, y) + delta(y, z)$。
-]<metric_space>
+]<def:metric-space>
 
 任何一个#emph[赋范向量空间（normed vector space）]都是度量空间。
 
@@ -64,14 +66,14 @@
   $
     V(p) = {x in X: (forall q in X, space q != p) space (delta(x, p) <= delta(x, q))}.
   $
-]<voronoi_tessellation>
+]<def:voronoi-tessellation>
 
 #definition[Delaunay 图][
   给定度量空间 $(X, delta)$ 和生成点集合 $P subset.eq X$，设 $V$ 表示 Voronoi 划分。$P$ 上的#emph[Delaunay 图（Delaunay Graph）]定义为无向图 $G = (P, E)$，其中
   $
     E = {{p, q} subset.eq P: p != q and V(p) inter V(q) != emptyset}.
   $
-]<delaunay_graph>
+]<def:delaunay-graph>
 
 Delaunay 图是 Voronoi 图的对偶图。
 
@@ -92,7 +94,7 @@ Delaunay 图是 Voronoi 图的对偶图。
     11 & space wide wide wide bold("return") italic("src") \
     12 & space wide wide italic("src") <- italic("best")
   $
-]<greedy_anns>
+]<algo:nsw-greedy-anns>
 
 #algorithm[用于 K-ANN 的基本贪心算法][
   $
@@ -117,13 +119,13 @@ Delaunay 图是 Voronoi 图的对偶图。
   $
 
   可以用平衡树来存储集合，按到 $italic("qry")$ 的距离排序。
-]<greedy_kanns>
+]<algo:nsw-greedy-k_anns>
 
 == 数据插入算法
 
 目标是建立一个估计的 Delaunay 图（在高维空间上，精确建图被证明是不可能的）。主要的目标是要最小化虚假的全局最小值点的概率，同时限制边数尽量小。一些办法是利用所使用的度量空间的拓扑性质。
 
-作者的办法是对于每个新增元素，利用 @greedy_kanns 在已有的图上查找其 $f$-ANN 并分别与该点连边。这个方法是基于这么一种假设：新增点的精确 Voronoi 邻居和他的 $f$-ANN 的交集应该是比较大的。
+作者的办法是对于每个新增元素，利用 @algo:nsw-greedy-k_anns 在已有的图上查找其 $f$-ANN 并分别与该点连边。这个方法是基于这么一种假设：新增点的精确 Voronoi 邻居和他的 $f$-ANN 的交集应该是比较大的。
 
 建图时，逐个插入元素即可。这种建图办法的好处是，由一维数据上的经验显示，只要加点顺序是随机的，这样建立的图无需额外调整即满足 small world navigation 性质。
 
@@ -133,7 +135,182 @@ Delaunay 图是 Voronoi 图的对偶图。
 
 对于 $d in NN inter [1. 20]$ 维欧氏空间，最优的 $f approx 3 d$。
 
-= 基于 HNSW 图的 ANN 算法
+= 基于 HNSW 图的 ANN 算法 @8594636
+
+Motivation 看不懂，先跳过了。
+
+== 算法
+
+=== 层内搜索算法
+
+#algorithm[层内搜索算法][
+  #algo(
+    title: $italic("searchLayerAnns")$,
+    parameters: ($italic("layer")$, $italic("entries")$, $italic("qry")$, $italic("num")$),
+    keywords: algo-keywords,
+  )[
+    $italic("vis") <- italic("entries")$ \
+    $italic("cands") <- italic("entries")$ \
+    $italic("nns") <- italic("entries")$ \
+    while $italic("cands") != emptyset$: #i \
+    let $c$ be the closest element #no-emph[to] $italic("qry")$ in $italic("cands")$ \
+    let $f$ be the furthest element to $italic("qry")$ in $italic("nns")$ \
+    if $delta(italic("qry"), c) > delta(italic("qry"), f)$: #i \
+    break #d \
+    for $v in c.italic("adjs")$ in $italic("layer")$: #i \
+    if $v in italic("vis")$: #i \
+    continue #d \
+    $italic("vis") <- italic("vis") union {v}$ \
+    let $f$ be the furthest element to $italic("qry")$ in $italic("nns")$ \
+    if $delta(italic("qry"), v) < delta(italic("qry"), f)$ or $|italic("nns")| < italic("num")$: #i \
+    $italic("cands") <- italic("cands") union {v}$ \
+    $italic("nns") <- italic("nns") union {v}$ \
+    if $|italic("nns")| = italic("num")$: #i \
+    $italic("nns") <- italic("nns") without {f}$ #d #d #d #d \
+    return $italic("nns")$
+  ]
+]<algo:hnsw-layer-k_anns>
+
+=== 搜索算法
+
+#algorithm[搜索算法][
+  #algo(
+    title: $italic("searchAnns")$,
+    parameters: ($italic("layers")$, $italic("qry")$, $italic("num")$, $italic("lim")$),
+    keywords: algo-keywords,
+  )[
+    $italic("nns") <- emptyset$ \
+    $italic("entries") <- italic("layers")_(|italic("layers")| - 1)$ \
+    for $l$ from $|italic("layers")| - 1$ down to $1$: #i \
+    $italic("nns") <- italic("searchLayerAnns")(italic("layers")_l, italic("entries"), italic("qry"), 1)$ \
+    $italic("entries") <- italic("nns")$ #d \
+    $italic("nns") <- italic("searchLayerAnns")(italic("layers")_0, italic("entries"), italic("qry"), italic("lim"))$ \
+    return the nearest $italic("num")$ elements in $italic("nns")$
+  ]
+]<algo:hnsw-k_anns>
+
+=== 插入算法
+
+==== 新点参与的层数
+
+仿照跳表的思想，为新插入的点 $p_"new"$ 设置最大层数 $l_"m"$，他会出现在第 $l$ 层当且仅当 $l in NN inter [0, l_"m"]$。具体来说，设置参数 $p_"e"$ 表示上升概率，将新点放在第 $0$ 层，且对于已经放了该点的第 $i$ 层，这个点有 $p_"e"$ 的概率在下一层也出现，因此 $p_"new"$ 到达的最大层数 $l_"m"$ 满足
+$
+  prob(l_"m" >= l) = p_"e"^l space (l in NN).
+$
+
+下面给出一种具体的取样方法，即取 $u ~ U(0, 1)$，$l_"m" = floor((ln u) / (ln p_"e"))$。因 $u ~ U(0, 1)$，所以 $ln 1 / u ~ E(1)$，$(ln u) / (ln p_"e") = ln(1 \/ u) / ln(1 \/ p_"e") ~ E(1 / p_"e")$（计算一下概率密度函数就可以轻易验证）。因为对于任意 $x in RR^+$ 有
+$
+  prob((ln u) / (ln p_"e") >= x) = 1 - prob((ln u) / (ln p_"e") < x) = 1 - (1 - p_"e"^x) = p_"e"^x,
+$
+#h(-indent) 所以这样得到的 $l_"m" = floor((ln u) / (ln p_"e"))$ 服从几何分布 $G(p_"e")$，符合我们的要求。
+
+==== 高层
+
+如果 $l_"m" >= |italic("layers")|$，就跳过这个环节；否则选取顶层的点作为入口。
+
+对于比 $l_"m"$ 高的层，$p_"new"$ 不会出现在这些层中，因此不需要连边，但我们仍需要在他们中搜索最近邻，以简化后续层的搜索。具体来说，对这些层，我们只需从高到低执行 @algo:hnsw-layer-k_anns，并将获得的 $1$-ANN 作为下一层的入口点。
+
+==== 低层
+
+如果有高层传下来的入口就直接使用，否则取最高层的所有点作为入口。
+
+对每一层，执行 @algo:hnsw-layer-k_anns，在结果中选出 $italic("new_edge_num")$ 个点与 $p_"new"$ 连边，再对这些点中度数超过限制的进行修剪。
+
+“从结果中选出 $italic("new_edge_num")$ 个点”这一步，有以下两种办法。
+
+===== 朴素方法
+
+#algorithm[选择新邻居的朴素方法][
+  #algo(
+    title: $italic("selectNeighborsNaive")$,
+    parameters: ($italic("layer")$, $p_"new"$, $italic("cands")$, $italic("new_edge_num")$),
+    keywords: algo-keywords,
+  )[
+    return the nearest $italic("new_edge_num")$ elements in $italic("cands")$ to $p_"new"$
+  ]
+]<algo:hnsw-select-neighbors-naive>
+
+===== 启发式算法
+
+额外的参数：
+- $italic("extend_cands")$：是否扩展候选集，只适合再数据高度集中时设为真。
+- $italic("keep_pruned_edges")$：是否保留被修剪的边。
+
+#algorithm[选择新邻居的启发式算法][
+  #algo(
+    title: $italic("selectNeighborsHeuristic")$,
+    parameters: (
+      $italic("layer")$,
+      $p_"new"$,
+      $italic("cands")$,
+      $italic("new_edge_num")$,
+      $italic("extend_cands")$,
+      $italic("keep_pruned_edges")$,
+    ),
+    keywords: algo-keywords,
+  )[
+    $italic("neighbors") <- emptyset$ \
+    if $italic("extend_cands")$: #i \
+    $italic("extra_cands") <- emptyset$ \
+    for $italic("cand") in italic("cands")$: #i \
+    for $italic("extra_cand") in italic("cand").italic("adjs")$: #i \
+    $italic("extra_cands") <- italic("extra_cands") union {italic("extra_cand")}$ #d #d \
+    $italic("cands") <- italic("cands") union italic("extra_cands")$ #d \
+    $italic("discarded") <- emptyset$ \
+    while $italic("cands") != emptyset$ and $|italic("neighbors")| < italic("new_edge_num")$: #i \
+    let $italic("cand")$ be the nearest element to $p_"new"$ in $italic("cands")$ \
+    $italic("cands") <- italic("cands") without {italic("cand")}$ \
+    let $italic("neighbor")$ be the nearest element to $p_"new"$ in $italic("neighbors")$ \
+    if $delta(p_"new", italic("cand")) < delta(p_"new", italic("neighbor"))$: #i \
+    $italic("neighbors") <- italic("neighbors") union {italic("cand")}$ #d \
+    else: #i \
+    $italic("discarded") <- italic("discarded") union {italic("cand")}$ #d #d \
+    if $italic("keep_pruned_edges")$: #i \
+    while $italic("discarded") != emptyset$ and $|italic("neighbors") < italic("new_edge_num")$: #i \
+    let $italic("cand")$ be the nearest element to $p_"new"$ in $italic("discarded")$ \
+    $italic("discarded") <- italic("discarded") without {italic("cand")}$ \
+    $italic("neighbors") <- italic("neighbors") union {italic("cand")}$ #d #d \
+    return $italic("neighbors")$
+  ]
+]<algo:hnsw-select-neighbors-heuristic>
+
+==== 插入算法
+
+#algorithm[插入算法][
+  #algo(
+    title: $italic("insert")$,
+    parameters: (
+      $italic("layers")$,
+      $p_"new"$,
+      $p_"e"$,
+      $italic("new_edge_num")$,
+      $italic("deg_lim")$,
+      $italic("num")$,
+    ),
+    keywords: algo-keywords,
+  )[
+    $italic("nns") <- emptyset$ \
+    $italic("entries") <- italic("layers")_(|italic("layers")| - 1)$ \
+    $u ~ U(0, 1)$ \
+    $l_"m" <- floor((ln u) / (ln p_"e"))$ \
+    for $l$ from $|italic("layers")| - 1$ down to $l_"m" + 1$: #i \
+    $italic("nns") <- italic("searchLayerAnns")(italic("layers")_l, italic("entries"), p_"new", 1)$ \
+    $italic("entries") <- italic("nns")$ #d \
+    for $l$ from $min{l_"m", |italic("layers")| - 1}$ down to $0$: #i \
+    $italic("nns") <- italic("searchLayerAnns")(italic("layers")_l, italic("entries"), p_"new", italic("num"))$ \
+    $italic("neighbors") <- italic("selectNeighbors")(p_"new", italic("nns"), italic("new_edge_num"))$ \
+    $V(italic("layers")_l) <- V(italic("layers")_l) union {p_"new"}$ \
+    for $italic("neighbor") in italic("neighbors")$: #i \
+    $E(italic("layers")_l) <- E(italic("layers")_l) union {{p_"new", italic("neighbor")}}$ \
+    if $deg italic("neighbor") > italic("deg_lim")$: #i \
+    $italic("neighbor").italic("adjs") <- italic("selectNeighbors")(italic("layers")_l, italic("neighbor"), italic("neighbor").italic("adjs"), italic("deg_lim"))$ #d #d \
+    $italic("entries") <- italic("nns")$ #d \
+    for $l in NN inter [ |italic("layers")|, l_"m"]$: #i \
+    $italic("layers")_l <- ({p_"new"}, emptyset)$
+  ]
+]<algo:hnsw-insert>
+
+#pagebreak()
 
 #bibliography(
   "references.bib",
