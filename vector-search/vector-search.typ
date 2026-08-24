@@ -60,6 +60,21 @@
 
 任何一个#emph[赋范向量空间（normed vector space）]都是度量空间。
 
+== 欧几里得空间
+
+#definition[欧几里得空间][
+  设 $V subset.eq RR$ 是有限维实内积空间，则称 $V$ 是一个#emph[欧几里得空间（Euclidean space）]。可以定义范数
+  $
+    || dot ||_2: x |-> sqrt(chev(x, x)) space (x in V)
+  $
+  #h(-indent) 和距离
+  $
+    delta: (x, y) |-> ||y - x||_2 space (x, y in V).
+  $
+]<def:euclidean-space>
+
+显然任何欧几里得空间都是度量空间。
+
 == 最近邻搜索问题
 
 #definition[$k$-近邻搜索问题][
@@ -396,6 +411,8 @@ $
 + 缩短搜索路径。
 + 减小索引大小。
 #h(-indent) 然后，他们提出了一个新的图结构，称为单调相对邻近图（monotonic relative neighborhood graph, MRNG），他能使搜索复杂度非常低（接近对数时间）。为了进一步降低索引复杂度，并让该方法能实际用于十亿节点的 ANNS 问题，他们通过对 MRNG 做近似，又提出了一种新的图结构，称作导航伸展图（我自己翻译的，navigating spreading-out graph, NSG）。这种图结构同时考虑到了上面说的四个方面。大量实验证明 NSG 显著优于所有现有算法，屌得没边。另外，NSG 在淘宝得电商搜索中展现了优越的性能，而且已经被整合进了他们十亿节点规模的搜索引擎（牛逼）。
+
+这篇论文#strong[只考虑欧几里得空间]。
 
 == 动机
 
