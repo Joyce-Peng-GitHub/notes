@@ -32,7 +32,7 @@
   link(dest, text(fill: rgb("#1a73e8"), content))
 }
 
-#let algo-keywords = ("func", "if", "else", "for", "while", "break", "continue", "return", "let")
+#let algo-keywords = ("func", "if", "else", "for", "while", "break", "continue", "return", "let", "true", "false")
 
 #align(center)[
   #text(font: (en-font, cn-font-heading), size: 2em)[
@@ -132,43 +132,49 @@ Delaunay 图是 Voronoi 图的对偶图。
 == 基本贪心算法
 
 #algorithm[基本贪心算法][
-  $
-     1 & space bold("func") italic("greedySearchAnn")(italic("src"), italic("qry")): \
-     2 & space wide bold("while") italic("true"): \
-     3 & space wide wide italic("best") <- italic("src") \
-     4 & space wide wide d_"min" <- delta(italic("best"), italic("qry")) \
-     5 & space wide wide bold("for") v in italic("src").italic("adjs"): \
-     6 & space wide wide wide d <- delta(v, italic("qry")) \
-     7 & space wide wide wide bold("if") d < d_"min": \
-     8 & space wide wide wide wide italic("best") <- v \
-     9 & space wide wide wide wide d_"min" <- d \
-    10 & space wide wide bold("if") italic("best") = italic("src"): \
-    11 & space wide wide wide bold("return") italic("src") \
-    12 & space wide wide italic("src") <- italic("best")
-  $
+  #algo(
+    title: $italic("greedySearchAnn")$,
+    parameters: ($italic("src")$, $italic("qry")$),
+    keywords: algo-keywords,
+  )[
+    while true: #i \
+    $italic("best") <- italic("src")$ \
+    $d_"min" <- delta(italic("best"), italic("qry"))$ \
+    for $v in italic("src").italic("adjs")$: #i \
+    $d <- delta(v, italic("qry"))$ \
+    if $d < d_"min"$: #i \
+    $italic("best") <- v$\
+    $d_"min" <- d$ #d #d \
+    if $italic("best") = italic("src")$: #i \
+    return $italic("src")$ #d \
+    $italic("src") <- italic("best")$
+  ]
 ]<algo:nsw-greedy-anns>
 
 #algorithm[用于 K-ANN 的基本贪心算法][
-  $
-    1 & space bold("func") italic("greedySearchKAnn")(italic("qry"), italic("num"), italic("rep")): \
-    2 & space wide italic("cands") <- emptyset \
-    3& space wide italic("vis") <- emptyset \
-    4 & space wide italic("res") <- emptyset \
-    5 & space wide #text[repeat for $italic("rep")$ times:] \
-    6 & space wide wide #text[randomly select a $italic("src") in X$ and $italic("cands") <- italic("cands") union {italic("src")}$] \
-    7 & space wide wide italic("tmp_res") <- emptyset \
-    8 & space wide wide bold("while") italic("true"): \
-    9 & space wide wide #text[let $c$ be the closest to $italic("qry")$ in $italic("cands")$] \
-    10 & space wide wide italic("cands") <- italic("cands") without {c} \
-    11 & space wide wide #text[#strong[if] $c$ is further from $italic("qry")$ than the $italic("num")$-th element in $italic("res")$:] \
-    12 & space wide wide wide bold("break") \
-    13 & space wide wide bold("for") v in c.italic("adjs"): \
-    14 & space wide wide wide bold("if") v in.not italic("vis"): \
-    15 & space wide wide wide wide italic("vis") <- italic("vis") union {v} \
-    16 & space wide wide wide wide italic("cands") <- italic("cands") union {v} \
-    17 & space wide wide wide wide italic("tmp_res") <- italic("tmp_res") union {v} \
-    18 & space wide #text[#strong[return] the nearest $italic("num")$ elements in $italic("res")$]
-  $
+  #algo(
+    title: $italic("greedySearchAnns")$,
+    parameters: ($italic("qry")$, $italic("num")$, $italic("rep")$),
+    keywords: algo-keywords,
+  )[
+    $italic("cands") <- emptyset$ \
+    $italic("vis") <- emptyset$ \
+    $italic("res") <- emptyset$ \
+    repeat for $italic("rep")$ times: #i \
+    randomly select a $italic("src") in X$ and $italic("cands") <- italic("cands") union {italic("src")}$ \
+    $italic("tmp_res") <- emptyset$ \
+    while true: #i \
+    let $c$ be the closest element to $italic("qry")$ in $italic("cands")$ \
+    $italic("cands") <- italic("cands") without {c}$ \
+    if $c$ is further from $italic("qry")$ than the $italic("num")$-th element in $italic("res")$: #i \
+    break #d \
+    for $v in c.italic("adjs")$: #i \
+    if $v in.not italic("vis")$: #i \
+    $italic("vis") <- italic("vis") union {v}$ \
+    $italic("cands") <- italic("cands") union {v}$ \
+    $italic("tmp_res") <- italic("tmp_res") union {v}$ #d #d \
+    return the nearest $italic("num")$ elements in $italic("res")$
+  ]
 
   可以用平衡树来存储集合，按到 $italic("qry")$ 的距离排序。
 ]<algo:nsw-greedy-k_anns>
