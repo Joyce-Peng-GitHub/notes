@@ -63,13 +63,17 @@
 == 欧几里得空间
 
 #definition[欧几里得空间][
-  设 $V subset.eq RR$ 是有限维实内积空间，则称 $V$ 是一个#emph[欧几里得空间（Euclidean space）]。可以定义范数
+  设 $V$ 是有限维实内积空间（这保证了内积的值域必然是 $[0, +infinity)$），则称 $V$ 是一个#emph[欧几里得空间（Euclidean space）]。可以定义范数
   $
-    || dot ||_2: x |-> sqrt(chev(x, x)) space (x in V)
+    || dot ||_2: x |-> sqrt(chev(x, x)) space (x in V),
   $
-  #h(-indent) 和距离
+  #h(-indent) 距离
   $
-    delta: (x, y) |-> ||y - x||_2 space (x, y in V).
+    delta: (x, y) |-> ||y - x||_2 space (x, y in V),
+  $
+  #h(-indent) 和夹角
+  $
+    angle: (x, y) |-> arccos(chev(x, y) / (||x||_2 dot ||y||_2)) space (x, y in V).
   $
 ]<def:euclidean-space>
 
