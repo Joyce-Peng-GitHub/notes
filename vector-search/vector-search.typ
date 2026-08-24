@@ -310,6 +310,27 @@ $
   ]
 ]<algo:hnsw-insert>
 
+== 参数选择
+
+参数 $p_"e"$ 和第 $0$ 层的 $italic("deg_lim")$（记作 $italic("deg_lim")_0$）决定了图的小世界可导航性。考虑几种特殊情况：
+- $p_"e" = 0, space italic("deg_lim")_0 = italic("new_edge_lim")$：据说此时建的图是一层有向 $k$-NN 图，据说其查询复杂度是指数级的。
+- $p_"e" = 0, space italic("deg_lim")_0 = +infinity$：此时建立的是一层 NSW 图，据说其查询复杂度是对数多项式级别的。
+#h(-indent) 一般地，当 $0 < p_"e" < 1$ 时，形成的 HNSW 图的查询复杂度是对数级的。
+
+为了最大化可控层级结构的性能优势，对每个点来说，其在不同层上的共同邻居应尽量少。为了减少这个共同邻居，我们需要减小 $p_"e"$。但同时，减小 $p_"e"$ 又会让每一层上贪心搜索的步数增加。我们需要找到最佳的 $p_"e"$ 来平衡二者，以达到最优性能。
+
+一个简单的选择是 $p_"e" = 1 / (italic("new_edge_num"))$。说是实验证明的。
+
+论文建议 $italic("deg_lim")_0 = 2 italic("new_edge_num")$。他们发现 $italic("deg_lim")_0 = italic("new_edge_num")$ 时对于高目标召回率的性能会严重下降。
+
+在选取邻居时，使用 @algo:hnsw-select-neighbors-heuristic 的性能会有与使用 @algo:hnsw-select-neighbors-naive 相比更优或相近的性能，且优势对于低维数据、中维数据的高目标召回率和高度集群的数据更加显著。
+
+论文建议选择 $italic("new_edge_num") in NN inter [5, 48]$。实验显示较小的 $italic("new_edge_num")$ 对于低目标召回率和低维数据的结果更好，而较大的 $italic("new_edge_num")$ 对于高目标召回率和高维数据的结果更好。我没太看懂。算法的空间消耗正比于该参数。
+
+建图时的 $italic("num")$ 必须足够大，以使算法在建图阶段的召回率接近统一（对于大多数应用情况 $0.95$ 足够了）@MALKOV201461。这个参数可以通过使用样例数据来自动配置 @MALKOV201461。我也没懂。
+
+建图过程可以并行化，没有几个同步点（同步点是甚么？），对索引质量也没有影响（索引应该指的就是建出来的 HNSW 图？）。建图速度与索引质量之间的平衡由建图时的 $italic("num")$ 控制。作者用实验测出一个合理的选择是 $italic("num") = 100$。
+
 #pagebreak()
 
 #bibliography(
