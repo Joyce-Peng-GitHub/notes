@@ -11,6 +11,7 @@
 #let powset = math.op(math.scr("P"))
 #let chev(..args) = $lr(chevron.l #args.pos().join($,$) chevron.r)$
 #let prob(..args) = $PP(#args.pos().join($,$))$
+#let expect(..args) = $EE(#args.pos().join($,$))$
 
 #let en-font = "New Computer Modern"
 #let cn-font-body = "Noto Serif SC"
@@ -330,6 +331,26 @@ $
 建图时的 $italic("num")$ 必须足够大，以使算法在建图阶段的召回率接近统一（对于大多数应用情况 $0.95$ 足够了）@MALKOV201461。这个参数可以通过使用样例数据来自动配置 @MALKOV201461。我也没懂。
 
 建图过程可以并行化，没有几个同步点（同步点是甚么？），对索引质量也没有影响（索引应该指的就是建出来的 HNSW 图？）。建图速度与索引质量之间的平衡由建图时的 $italic("num")$ 控制。作者用实验测出一个合理的选择是 $italic("num") = 100$。
+
+== 复杂度分析
+
+=== 查询的时间复杂度
+
+看不懂推导，要求的背景知识太多了。
+
+似乎查询复杂度是 $O(log n)$ 的，我觉得是意料之中，毕竟模仿了跳表的结构。
+
+=== 建图的时间复杂度
+
+论文说插入一个新点只不过是在各层上执行层内近似 KNN 搜索，并使用启发式的 @algo:hnsw-select-neighbors-heuristic 筛选邻居。固定 $italic("num")$ 时，@algo:hnsw-select-neighbors-heuristic 的复杂度是 $O(1)$。一个新点参与的层数的期望
+$
+  expect(l_m + 1) = 1 / p_"e" + 1
+$
+#h(-indent) 与数据规模 $n$ 无关。因此，至少对于相对低维的数据（我不知道为甚么有这个限制），建图的总复杂度为 $O(n log n)$。
+
+=== 空间复杂度
+
+每个元素的平均空间占用是 $italic("new_edge_num")_0 + 1 / p_"e" dot italic("new_edge_num")$ 条边。
 
 #pagebreak()
 
