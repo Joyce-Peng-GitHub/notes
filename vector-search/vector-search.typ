@@ -426,6 +426,32 @@ $
 
 这篇论文#strong[只考虑欧几里得空间]。
 
+#algorithm[贪心搜索算法][
+  #algo(
+    title: $italic("greedySearchAnns")$,
+    parameters: ($G$, $italic("src")$, $italic("qry")$, $italic("num")$, $italic("pool_sz")$),
+    keywords: algo-keywords,
+  )[
+    $italic("cands") <- (italic("src"))$ \
+    $italic("seen") <- emptyset$ \
+    $italic("checked") <- emptyset$ \
+    while true: #i \
+    $italic("fst") <- 0$ \
+    while $italic("fst") < |italic("cands")|$ and $italic("cands")_italic("fst") in italic("checked")$: #i \
+    $italic("fst") <- italic("fst") + 1$ #d \
+    if $italic("fst") = |italic("cands")|$: #i \
+    break #d \
+    $italic("checked") <- italic("checked") union {italic("cands")_italic("fst")}$ \
+    for $italic("neighbor") in V(G)$ s.t. $(italic("cands")_italic("fst"), italic("neighbor")) in E(G)$: #i \
+    if $italic("neighbor") in.not italic("seen")$: #i \
+    $italic("seen") <- italic("seen") union {italic("neighbor")}$ \
+    $italic("cands") <- mat(italic("cands"); italic("neighbor"))$ #d #d \
+    sort $italic("cands")$ by distance to $italic("qry")$ \
+    keey only the first $italic("pool_sz")$ elements in $italic("cands")$ #d \
+    return the first $italic("num")$ elements in $italic("cands")$
+  ]
+]<algo:nsg-greedy-k_anns>
+
 == 动机
 
 影响贪心算法效率最关键的两个因素是：
