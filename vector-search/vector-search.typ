@@ -352,6 +352,10 @@ $
 
 每个元素的平均空间占用是 $italic("new_edge_num")_0 + 1 / p_"e" dot italic("new_edge_num")$ 条边。
 
+== 方法对比和讨论
+
+先跳过了。
+
 #pagebreak()
 
 #bibliography(
