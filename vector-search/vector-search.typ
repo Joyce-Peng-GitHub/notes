@@ -81,6 +81,43 @@
 
 任何 $d$ 维欧几里得空间都与定义标准内积的 $RR^d$ 同构。
 
+== 凸包
+
+#definition[凸包][
+  设 $V$ 是一个向量空间，$S subset.eq V$。称
+  $
+    "conv"(S) = {sum_(x in T) lambda(x) dot x: T subset.eq S and |T| in NN and ((forall x in S) space (lambda(x) >= 0)) and sum_(x in S) lambda(x) = 1}
+  $
+  #h(-indent) 为 $S$ 的#emph[凸包（convex hull）]。
+]
+
+== 勒贝格测度
+
+#definition[勒贝格测度][
+  考虑 $RR^n$，任何其他欧几里得空间都可以同构到该空间。
+
+  定义 $[l, r] = {x in RR: l <= x <= r}$。特别地，$l > r <==> [l, r] = emptyset$。定义 $cal(I) = {[l, r]: l,r in RR}$。定义闭区间 $[l, r] space (l <= r)$ 的体积（长度）为 $|[l, r]| = r - l$。
+  
+  设集合 $I subset.eq RR^n$。如果存在 $(J_i)_(i = 0)^(n - 1) in cal(I)^n$ 满足
+  $
+    I = product_(i = 0)^(n - 1) J_i,
+  $
+  #h(-indent) 则称 $I$ 是一个 #emph[$n$ 维闭区间]，并定义其体积为
+  $
+    |I| = product_(i = 0)^(n - 1) |J_i|.
+  $
+
+  对任意 $S in RR^n$，定义其#emph[勒贝格外测度（Lebesgue outer measure）]为
+  $
+    m^*(S) = inf{sum_(i = 0)^(+infinity) |I_i|: E subset.eq union.big_(i = 0)^(+infinity) I_i and ((forall i in NN) space (I_i in cal(I)^n))}.
+  $
+  #h(-indent) 称 $S$ 是#emph[勒贝格可测的（Lebesgue measurable）]，如果
+  $
+    (forall T subset.eq RR^n) space (m^*(T) = m^*(T inter S) + m^*(T without S)).
+  $
+  #h(-indent) 将 $RR^n$ 上所有勒贝格可测集记作 $cal(L)(RR^n)$。将 $m^*$ 限制在 $cal(L)(RR^n)$ 上，得到的函数 $m = m^* harpoon.tr cal(L)(RR^n)$ 称为#emph[勒贝格测度（Lebesgue measure）]。
+]
+
 == 最近邻搜索问题
 
 #definition[$k$-近邻搜索问题][
