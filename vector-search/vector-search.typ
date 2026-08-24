@@ -109,13 +109,13 @@
 
   对任意 $S in RR^n$，定义其#emph[勒贝格外测度（Lebesgue outer measure）]为
   $
-    m^*(S) = inf{sum_(i = 0)^(+infinity) |I_i|: E subset.eq union.big_(i = 0)^(+infinity) I_i and ((forall i in NN) space (I_i in cal(I)^n))}.
+    lambda_n^*(S) = inf{sum_(i = 0)^(+infinity) |I_i|: E subset.eq union.big_(i = 0)^(+infinity) I_i and ((forall i in NN) space (I_i in cal(I)^n))}.
   $
   #h(-indent) 称 $S$ 是#emph[勒贝格可测的（Lebesgue measurable）]，如果
   $
-    (forall T subset.eq RR^n) space (m^*(T) = m^*(T inter S) + m^*(T without S)).
+    (forall T subset.eq RR^n) space (lambda_n^*(T) = lambda_n^*(T inter S) + lambda_n^*(T without S)).
   $
-  #h(-indent) 将 $RR^n$ 上所有勒贝格可测集记作 $cal(L)(RR^n)$。将 $m^*$ 限制在 $cal(L)(RR^n)$ 上，得到的函数 $m = m^* harpoon.tr cal(L)(RR^n)$ 称为#emph[勒贝格测度（Lebesgue measure）]。
+  #h(-indent) 将 $RR^n$ 上所有勒贝格可测集记作 $cal(L)(RR^n)$。将 $lambda_n^*$ 限制在 $cal(L)(RR^n)$ 上，得到的函数 $lambda_n = lambda_n^* harpoon.tr cal(L)(RR^n)$ 称为#emph[勒贝格测度（Lebesgue measure）]。
 ]
 
 == 最近邻搜索问题
