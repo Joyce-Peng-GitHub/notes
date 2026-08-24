@@ -8,7 +8,7 @@
 #let proof = thmproof("proof", "证明")
 #let algorithm = thmbox("algorithm", "算法")
 
-#let powset = math.op(math.scr("P"))
+#let powset(..args) = $scr(P)(#args.pos().join($,$))$
 #let chev(..args) = $lr(chevron.l #args.pos().join($,$) chevron.r)$
 #let prob(..args) = $PP(#args.pos().join($,$))$
 #let expect(..args) = $EE(#args.pos().join($,$))$
@@ -44,7 +44,7 @@
 
 #pagebreak()
 
-= 基于 NSW 图的 ANN 算法 @MALKOV201461
+= 基本概念
 
 == 度量空间
 
@@ -59,6 +59,34 @@
 ]<def:metric-space>
 
 任何一个#emph[赋范向量空间（normed vector space）]都是度量空间。
+
+== 最近邻搜索问题
+
+#definition[$k$-近邻搜索问题][
+  给定度量空间 $(cal(X), delta)$ 上的一个有限的点集 $D subset.eq cal(X)$（表示数据点）和 $k in NN space (k <= |D|)$。对每个 $p in cal(X)$，定义偏序关系 $scripts(<=)_p = {(x, y) in cal(X)^2: delta(p, x) <= delta(p, y)}$。我们需要用算法构造函数 $f: cal(X) -> powset(D)$，对于任意给定的查询点 $q in cal(X)$，返回 $f(q) subset.eq D$ 满足
+  $
+    |f(q)| = k and ((forall x in f(q)) space (forall y in D without f(q)) space (x scripts(<=)_q y)).
+  $
+]
+
+== 召回率
+
+#definition[召回率][
+  设分类问题的输入空间为 $cal(X)$，输出空间 $cal(Y) = {0, 1}$。给定一个分类器 $f: cal(X) -> cal(Y)$，和一个样本集合 $D = ((x_i, y_i))_(i = 0)^(n - 1$，定义：
+  - 真阴性（true negative, TN）：$"TN" = {i in NN inter [0, n): y_i = 0 and f(x_i) = 0}$。
+  - 真阳性（true positive, TP）：$"TP" = {i in NN inter [0, n): y_i = 1 and f(x_i) = 1}$。
+  - 假阴性（false negative, FN）：$"FN" = {i in NN inter [0, n): y_i = 1 and f(x_i) = 0}$。
+  - 假阳性（false positive, FP）：$"FP" = {i in NN inter [0, n): y_i = 0 and f(x_i) = 1}$。
+  #emph[经验召回率（empirical recall）]定义为
+  $
+    italic("recall") = (|"TP"|) / (|"TP"| + |"FN"|).
+  $
+]<def:recall>
+
+特别地，对于 $k$-ANN 问题，如果精确 $k$-NN 为 $R$，而近似算法的结果为 $tilde(R)$，则召回率为
+$
+  italic("recall") = (|R inter tilde(R)|) / (|R|) = (|R inter tilde(R)|) / k.
+$
 
 == Voronoi 划分、Veronoi 图、Delaunay 图
 
@@ -77,6 +105,8 @@
 ]<def:delaunay-graph>
 
 Delaunay 图是 Voronoi 图的对偶图。
+
+= 基于 NSW 图的 ANN 算法 @MALKOV201461
 
 == 基本贪心算法
 
