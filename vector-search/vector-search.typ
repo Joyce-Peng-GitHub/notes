@@ -8,6 +8,8 @@
 #let proof = thmproof("proof", "证明")
 #let algorithm = thmbox("algorithm", "算法")
 
+#let diam = $op("diam")$
+#let conv = $op("conv")$
 #let powset(..args) = $scr(P)(#args.pos().join($,$))$
 #let chev(..args) = $lr(chevron.l #args.pos().join($,$) chevron.r)$
 #let prob(..args) = $PP(#args.pos().join($,$))$
@@ -31,6 +33,7 @@
   let content = if pos-args.len() > 0 { pos-args.at(0) } else { dest }
   link(dest, text(fill: rgb("#1a73e8"), content))
 }
+#set math.mat(delim: "[")
 
 #let algo-keywords = ("func", "if", "else", "for", "while", "break", "continue", "return", "let", "true", "false")
 
@@ -501,6 +504,50 @@ $
 作者希望通过同时减小 $o$ 和 $l$ 来提高性能。人们总是忽略的一件事是必须首先保证图的连通性。于是作者提出了之前说的四个考虑方面。对于初始点可能变化的情况，必须保证图强连通；如果初始点是固定的，只需保证整张图从初始点单向连通。
 
 我操，我突然想到，HNSW 的 @algo:hnsw-insert 在建图时，每一层加入新点并双向连边后会对出度过高的邻居进行修剪，这显然可能导致图不强连通。此时有一些最优点会因为图上到达不了而无法被访问。
+
+== 图的单调性
+
+考虑 $d$ 维欧几里得空间 $E_d$。
+
+#definition[开球][
+  对任何 $c in E_d$，称
+  $
+    B(c, r) = {x in E_d: delta(c, x) < r} space (c in E_d, r >= 0)
+  $
+  #h(-indent) 为以 $c$ 为球心，$r$ 为半径的#emph[开球（open sphere）]。
+]<def:open-sphere>
+
+#definition[单调路径][
+  给定有限的点集 $S subset.eq E_d$、图 $G space (V(G) = S)$ 和点 $p,q in S$。设 $v = (v_i)_(i = 0)^(n - 1) in S^n space (n in NN)$ 是 $G$ 上一条从 $p$ 到 $q$ 的路径（path）。称 $v$ 是从 $p$ 到 $q$ 的一条#emph[单调路径（monotonic path）]，当且仅当
+  $
+    (forall i in NN inter [1, n)) space (delta(q, v_i) < delta(q, v_(i - 1))).
+  $
+]<def:monotonic-path>
+
+#definition[单调搜索网络][
+  给定有限的点集 $S subset.eq E_d$ 和图 $G space (V(G) = S)$。称 $G$ 是一个#emph[单调搜索网络（monotonic search network, MSNET）]，当且仅当对任意 $p,q in S$ 都存在从 $p$ 到 $q$ 的单调路径。
+]<def:monotonic-search-network>
+
+MSNET 因为保证图上任意两点之间都存在路径而天然是强连通的。
+
+作者认为，在 MSNET 上，只需执行贪心算法就可以按照单调路径到达目标点而无需在到达局部最优时回溯（但我感到困惑的是，实际查询时输入的是一个不在图上的点（查询的点在图上是一个平凡的情况），@def:monotonic-search-network 保证的却是图上已有的点之间都存在单调路径，这个逻辑链并不完整）。MSNET 的单调性使贪心算法的搜索行为几乎是确定且可分析的。
+
+#theorem[MSNET 上的贪心路径单调性][
+  设 $S subset.eq E_d$ 是 $E_d$ 中随机分布（甚么叫随机分布？）的有限个点的集合，图 $G space (V(G) = S)$ 是 MSNET，则对任意 $p,q in S$ 都可以在 $G$ 上执行 @algo:nsg-greedy-k_anns 得到一条从 $p$ 到 $q$ 的单调路径。
+]<thm:msnet-greedy-path-monotonicity>
+
+作者把证明放到了附录，那我就先不管了。
+
+#lemma[MSNET 的开球定义][
+  给定有限的点集 $S subset.eq E_d$ 和图 $G space (V(G) = S)$，则 $G$ 是一个 MSNET，当且仅当
+  $
+    (forall p,q in S) space (exists r in S) space ((p, r) in E(G) and r in B(q, delta(q, p))).
+  $
+]<lem:msnet-open-sphere-definition>
+
+这个引理倒是比较显然，瞪一眼就可以看出证明。
+
+#cite(label("10.14778/3303753.3303754",), supplement: [Theorem 2]) 表述一片混乱，条件不清晰，叽里咕噜不知道说甚么，GPT 甚至怀疑他不严谨，跳过得了。狗屎东西，怎么写的论文。
 
 #pagebreak()
 
