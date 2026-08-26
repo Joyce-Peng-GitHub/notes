@@ -121,6 +121,28 @@
   #h(-indent) 将 $RR^n$ 上所有勒贝格可测集记作 $cal(L)(RR^n)$。将 $lambda_n^*$ 限制在 $cal(L)(RR^n)$ 上，得到的函数 $lambda_n = lambda_n^* harpoon.tr cal(L)(RR^n)$ 称为#emph[勒贝格测度（Lebesgue measure）]。
 ]
 
+== 中位数、几何中位数和中心点
+
+#definition[几何中位数][
+  给定 $d$ 维欧几里得空间 $E_d$ 中的有限个点的集合 $D subset.eq E_d$，其#emph[几何中位数（geometric median）]定义为
+  $
+    op("gmed") D = argmin_(x^* in E_d) sum_(x in D) ||x - x^*||_2,
+  $
+  #h(-indent) 即#strong[整个 $E_d$ 空间中]到数据集各点距离之和最小的点。
+]<def:geometric-median>
+
+显然，对于 $E_d = RR$ 的情况，几何中位数就是我们平时说的统计意义上的中位数。
+
+#definition[中心点][
+  给定 $d$ 维欧几里得空间 $E_d$ 中的有限个点的集合 $D subset.eq E_d$，其#emph[中心点（medoid）]定义为
+  $
+    op("medoid") D = argmin_(x^* in D) sum_(x in D) ||x - x^*||_2,
+  $
+  #h(-indent) 即#strong[数据集中]到数据集各点距离之和最小的点。
+]<def:medoid>
+
+我不认为“中心点”是一个好的翻译，容易让人误以为是指质心。也许叫“中位点”更好？
+
 == 最近邻搜索问题
 
 #definition[$k$-近邻搜索问题][
