@@ -547,7 +547,74 @@ MSNET 因为保证图上任意两点之间都存在路径而天然是强连通�
 
 这个引理倒是比较显然，瞪一眼就可以看出证明。
 
-#cite(label("10.14778/3303753.3303754",), supplement: [Theorem 2]) 表述一片混乱，条件不清晰，叽里咕噜不知道说甚么，GPT 甚至怀疑他不严谨，跳过得了。狗屎东西，怎么写的论文。
+#cite(label("10.14778/3303753.3303754"), supplement: [Theorem 2]) 表述一片混乱，条件不清晰，叽里咕噜不知道说甚么，GPT 甚至怀疑他不严谨，跳过得了。狗屎东西，怎么写的论文。
+
+== MRNG
+
+HNSW 和 FANNG 都采用了相对邻近图（relative neighborhood graph, RNG），以使图稀疏。作者说，有人发现 RNG 的边不够多，不能形成 MSNET，所以在 RNG 上的搜索路径长度没有理论保证，可能会绕很长的远路。然而，这篇论文我下载不了，ScienceDirect 提示说我的学校没订阅。神了。
+
+作者认为这个问题主要是由于 RNG 的选边策略。前人尝试了通过向 RNG 加入额外的边来用最少的边构建 MSNET，但这个办法非常耗时间。于是，受 RNG 的启发，作者提出了一种新的选边策略来构建单调图。这样构建的图可能不是最小的 MSNET，但也非常稀疏。基于该策略，他们提出了新的图结构 MRNG：
+#definition[单调相对邻近图][
+  给定一个有限的点集 $S subset.eq E_d$。有向图 $G$ 称为 $S$ 上的一张#emph[单调相对邻近图（monotonic relative neighborhood graph, MRNG）]，当且仅当
+  $
+    (forall p,q in S) space ((p, q) in E(G) <-> ((forall r in italic("lune")(p, q) inter S) space ((p, r) in.not E(G)))),
+  $
+  #h(-indent) 其中
+  $
+    italic("lune"): (p, q) |-> B(p, delta(p, q)) inter B(q, delta(p, q)) space (p, q in E_d).
+  $
+]<def:monotonic-relative-neighborhood-graph>
+
+我不知道为甚么把两个球得交集叫做 lune（弓形/半月形），明明这是两个弓形啊？
+
+这是一个递归定义。因为
+$
+  r in italic("lune")(p, q) -> delta(p, r) < delta(p, q),
+$
+#h(-indent) 所以在考虑 $p$ 要连哪些边时，按 $scripts(<=)_p$ 排序各点，对每个点 $q$，$(p, q)$ 要不要加到图中，可以完全由比 $q$ 更靠近 $p$ 的点的连边情况决定。
+
+RNG 要求 $(p, q) in E(G) <--> italic("lune")(p, q) inter S = emptyset$，即两点之间的凸透镜形区域内不能有别的点（否则应把两个点分别连接到该中介点上来替代）。而 MRNG 放宽要求，要么是空集，不是空集的话，只要从起始点到中介点没有连边就行。一张 RNG 必然是一张 MRNG。
+
+特别地，论文加强了 $scripts(<=)_p$ 的定义。他通过为为每个点 $x in S$ 分配唯一编号 $italic("id")(x)$，定义
+$
+  scripts(<=)_p = {(x, y) in S^2: delta(p, x) < delta(p, y) or (delta(p, x) = delta(p, y) and italic("id")(x) < italic("id")(y))}.
+$
+#h(-indent) 在这种定义下，$scripts(<=)_p$ 构成一个全序关系。这样，将点按照到某一点的距离排序时，排序结果是唯一确定的。
+
+#theorem[MRNG 是 MSNET][
+  给定有限的点集 $S subset.eq E_d$，设 $G space (V(G) = S)$ 是 $S$ 上的 MRNG，则 $G$ 是 MSNET。
+]<thm:mrng-is-msnet>
+
+#definition[最近邻图][
+  给定有限的点集 $S subset.eq E_d$。有向图 $G$ 称为 $S$ 上的一张#emph[最近邻图（nearest neighbor graph, NNG）]，当且仅当
+  $
+    (forall p in S) space (forall q in S) space ((p, q) in E(G) <-> ((forall r in S) space (delta(p, q) < delta(p, r)))).
+  $
+]<def:nearest-neighbor-graph>
+
+同一个 $S$ 上的任何 NNG、RNG、MRNG 都满足
+$
+  E(italic("NNG")) subset.eq E(italic("RNG")) subset.eq E(italic("MRNG")).
+$
+
+#lemma[
+  设 $G$ 是 $E_d$ 中的一个 MRNG，则 $G$ 的最大度数 $Delta(G)$ 是与 $|V(G)|$ 无关的常量。
+]<lem:mrng-constant-max-degree>
+
+由 @lem:mrng-constant-max-degree、@thm:msnet-greedy-path-monotonicity 和那个写得乱七八糟不知道在说甚么的定理，作者得出 MRNG 上的搜索复杂度是 $O((a dot n^(1 / d) log n^(1 / d)) / (Delta r))$，其中 $n = |V(G)|$，$a = 1 / n sum_(v in V(G)) deg v$，$Delta r$ 是 $n$ 的非常地递减的函数。
+
+作者采用了一种朴素的方式来构建 MRNG，即对每个顶点应用选边策略。具体来说，
+#algorithm[MRNG 构建算法][
+给定一个有限的点集 $S subset.eq E_d$。记 $n = |S|$。对每个点 $p in S$：
++ 将 $S without {p}$ 按 $scripts(<)_p$ 排序，记作 $r = (r_i)_(i = 0)^(n - 2)$。
++ 设已选择的点形成集合 $A$。初始时，$A = emptyset$。
++ 让 $i$ 从 $0$ 遍历到 $n - 2$：
+  + 如果存在 $q in A$ 满足 $p r_i$ 不是 $triangle p q r_i$ 中最长的边，即 $delta(p, r_i) < max{delta(p, q), delta(r_i, q)}$，则 $A <- A inter {r_i}$。
+
+算法的时间复杂度是 $O(n^2 log n + a dot n^2)$，其中 $a$ 是 MRNG 的平均出度。
+]<algo:mrng-construction>
+
+前人构造 MSNET 索引的方法的时间复杂度在随机点分布下最少为 $O(n^(2 - 2 / (d + 1) + epsilon) + n^2 log n + n^3)$，@algo:mrng-construction 的时间复杂度比他小得多。
 
 #pagebreak()
 
