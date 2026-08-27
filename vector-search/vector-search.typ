@@ -738,6 +738,16 @@ $
 
 作者说平均搜索复杂度近似是 $O(Delta^+(italic("NSG") dot n^(1 / d) log n^(1 / d) \/ Delta r))$。在他们的实验中，$Delta r approx O(n^(- epsilon / d)) space (0 < epsilon << d)$，因此经验的平均复杂度是 $O(Delta^+(italic("NSG")) dot n^((1 + epsilon) / d) log n^(1 / d)) approx O(log n)$。
 
+== 实验
+
+跳过。
+
+== 讨论
+
+作者觉得他们的方法屌爆了。
+
+作者认为让 NSG 支持增量索引是可能的，他们将其留给后人。
+
 #pagebreak()
 
 #bibliography(
