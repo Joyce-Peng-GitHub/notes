@@ -9,6 +9,8 @@
 #let proof = thmproof("proof", "证明")
 #let algorithm = thmbox("algorithm", "算法")
 
+#let argmin = $limits(op("argmin"), inline: #false)$
+#let argmax = $limits(op("argmax"), inline: #false)$
 #let diam = $op("diam")$
 #let conv = $op("conv")$
 #let powset(..args) = $scr(P)(#args.pos().join($,$))$
@@ -644,6 +646,66 @@ $
 ]<algo:mrng-construction>
 
 前人构造 MSNET 索引的方法的时间复杂度在随机点分布下最少为 $O(n^(2 - 2 / (d + 1) + epsilon) + n^2 log n + n^3)$，@algo:mrng-construction 的时间复杂度比他小得多。
+
+== NSG：MRNG 的实用近似
+
+尽管 MRNG 能保证很快的搜索速度，他的索引时间还是高到不能实际用于大规模问题。于是，作者通过近似 MRNG，给出了一个实用的方法，他们把这样构造出来的图命名为导航伸展图（navigating spreading-out graph, NSG，这个中文名是我自己翻译的）。
+
+#algorithm[NSG 构造算法][
+  + 用现有的最先进的方法构建一张近似 $italic("num")$-NN 图 $G$。
+  + 估计数据集的中心点（medoid）。
+    + 计算数据集的质心（centroid）。
+    + 在 $G$ 上对质心执行 @algo:nsg-greedy-k_anns，将其得到的最近的那个邻居作为近似的中心点。将这个点称作#emph[导航节点（navigating node）]，因为所有的搜索都会从这一点出发。
+  + 对每个点，从候选集中选取邻居，形成候选邻居集。具体来说，对于每个 点 $p$：
+    + 在 $G$ 上，从中心点出发对 $p$ 执行 @algo:nsg-greedy-k_anns，
+    + 在搜索过程中，把每个计算过距离的点 $q$ 加入到候选集。
+    + 按照 MRNG 的选边策略，从候选集中选出最多 $Delta^+(italic("NSG"))$（人为设置的参数，即构建出的 $italic("NSG")$ 的最大出度）个邻居。
+  + 在以上步骤构建出的图上，生成从导航节点出发的 DFS 树。如果还有孤立的点，就将他们连到通过执行 @algo:nsg-greedy-k_anns 获得的近似最近邻上，然后继续 DFS。
+
+  #algo(
+    title: $italic("buildNsg")$,
+    parameters: ($G$, $Delta^+(italic("NSG"))$, $italic("pool_sz")$),
+    breakable: true,
+  )[
+    $c <- 1 / (|V(G)|) sum_(v in V(G)) v$ \
+    let $italic("rand")$ be a random vertex in $V(G)$ \
+    ${italic("nav")} <- italic("greedySearchAnns")(G, italic("rand"), c, 1, italic("pool_sz"))$ \
+    $italic("NSG") <- (V(G), emptyset)$ \
+    for $v in V(G)$ #i \
+    let $italic("vis")$ be the set of all the vertices visited when perfoming $italic("greedySearchAnns")(G, italic("nav"), v, 1, italic("pool_sz"))$ \
+    $italic("vis") <- italic("vis") union {italic("neighbor") in V(G): (v, italic("neighbor")) in E(G)}$ \
+    let $italic("vis")$ be the sorted list of $italic("vis")$ by $scripts(<)_v$ \
+    $italic("res") <- emptyset$ \
+    for $i$ from $0$ to $|italic("vis")| - 1$: #i \
+    if $|italic("res")| == Delta^+(italic("NSG"))$: #i \
+    break #d \
+    $italic("has_conflict") <-$ false \
+    for $r in italic("res")$: #i \
+    assert $delta(v, r) <= delta(v, italic("vis")_i)$, i.e., $r in B(v, delta(v, italic("vis")_i))$ \
+    if $delta(r, italic("vis")_i) < delta(v, italic("vis")_i)$: #i \
+    assert $r in italic("lune")(v, italic("vis")_i) = B(v, delta(v, italic("vis")_i)) inter B(italic("vis")_i, delta(v, italic("vis")_i))$
+    $italic("has_conflict") <-$ true \
+    break #d #d \
+    if $italic("has_conflict")$: #i \
+    continue #d \
+    $italic("res") <- italic("res") union {italic("vis")_i}$ \
+    $E(italic("NSG")) <- E(italic("NSG")) union {(v, italic("vis")_i)}$ #d #d \
+    $italic("vis") <- emptyset$ \
+    func $italic("dfs")(italic("cur"))$: #i \
+    $italic("vis") <- italic("vis") union {italic("cur")}$ \
+    for $italic("nxt") in V(italic("NSG"))$  s.t. $(italic("cur"), italic("nxt")) in E(italic("NSG"))$: #i \
+    if $italic("nxt") in.not italic("vis")$: #i \
+    $italic("dfs")(italic("nxt"))$ #d #d #d \
+    $italic("dfs")(italic("nav"))$ \
+    while $|italic("vis")| < |V(italic("NSG"))|$: #i \
+    let $v$ be any vertex in $V(italic("NSG")) without italic("vis")$ \
+    ${italic("ann")} <- italic("greedySearchAnns")(italic("NSG"), italic("nav"), v, 1, italic("pool_sz"))$ \
+    assert $italic("ann") in italic("vis")$ \
+    $E(italic("NSG")) <- E(italic("NSG")) union {(italic("ann"), v)}$ \
+    $italic("dfs")(v)$ #d \
+    return $italic("NSG")$
+  ]
+]<algo:nsg-construction>
 
 #pagebreak()
 
