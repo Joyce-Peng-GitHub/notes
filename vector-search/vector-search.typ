@@ -2,6 +2,7 @@
 #show: thmrules
 #import "@preview/algo:0.3.6": algo, code, comment, d, i, no-emph
 
+#let thmbox = thmbox.with(breakable: true)
 #let definition = thmbox("definition", "定义")
 #let theorem = thmbox("theorem", "定理")
 #let lemma = thmbox("lemma", "引理")
@@ -35,7 +36,21 @@
 }
 #set math.mat(delim: "[")
 
-#let algo-keywords = ("func", "if", "else", "for", "while", "break", "continue", "return", "let", "true", "false")
+#let algo-keywords = (
+  "func",
+  "if",
+  "else",
+  "for",
+  "while",
+  "break",
+  "continue",
+  "return",
+  "let",
+  "true",
+  "false",
+  "assert",
+)
+#let algo = algo.with(keywords: algo-keywords, breakable: true)
 
 #align(center)[
   #text(font: (en-font, cn-font-heading), size: 2em)[
@@ -100,7 +115,7 @@
   考虑 $RR^n$，任何其他欧几里得空间都可以同构到该空间。
 
   定义 $[l, r] = {x in RR: l <= x <= r}$。特别地，$l > r <==> [l, r] = emptyset$。定义 $cal(I) = {[l, r]: l,r in RR}$。定义闭区间 $[l, r] space (l <= r)$ 的体积（长度）为 $|[l, r]| = r - l$。
-  
+
   设集合 $I subset.eq RR^n$。如果存在 $(J_i)_(i = 0)^(n - 1) in cal(I)^n$ 满足
   $
     I = product_(i = 0)^(n - 1) J_i,
@@ -197,7 +212,6 @@ Delaunay 图是 Voronoi 图的对偶图。
   #algo(
     title: $italic("greedySearchAnn")$,
     parameters: ($italic("src")$, $italic("qry")$),
-    keywords: algo-keywords,
   )[
     while true: #i \
     $italic("best") <- italic("src")$ \
@@ -217,7 +231,6 @@ Delaunay 图是 Voronoi 图的对偶图。
   #algo(
     title: $italic("greedySearchAnns")$,
     parameters: ($italic("qry")$, $italic("num")$, $italic("rep")$),
-    keywords: algo-keywords,
   )[
     $italic("cands") <- emptyset$ \
     $italic("vis") <- emptyset$ \
@@ -267,7 +280,6 @@ Motivation 看不懂，先跳过了。
   #algo(
     title: $italic("searchLayerAnns")$,
     parameters: ($italic("layer")$, $italic("entries")$, $italic("qry")$, $italic("num")$),
-    keywords: algo-keywords,
   )[
     $italic("vis") <- italic("entries")$ \
     $italic("cands") <- italic("entries")$ \
@@ -297,7 +309,6 @@ Motivation 看不懂，先跳过了。
   #algo(
     title: $italic("searchAnns")$,
     parameters: ($italic("layers")$, $italic("qry")$, $italic("num")$, $italic("lim")$),
-    keywords: algo-keywords,
   )[
     $italic("nns") <- emptyset$ \
     $italic("entries") <- italic("layers")_(|italic("layers")| - 1)$ \
@@ -344,7 +355,6 @@ $
   #algo(
     title: $italic("selectNeighborsNaive")$,
     parameters: ($italic("layer")$, $p_"new"$, $italic("cands")$, $italic("new_edge_num")$),
-    keywords: algo-keywords,
   )[
     return the nearest $italic("new_edge_num")$ elements in $italic("cands")$ to $p_"new"$
   ]
@@ -367,7 +377,6 @@ $
       $italic("extend_cands")$,
       $italic("keep_pruned_edges")$,
     ),
-    keywords: algo-keywords,
   )[
     $italic("neighbors") <- emptyset$ \
     if $italic("extend_cands")$: #i \
@@ -407,7 +416,6 @@ $
       $italic("deg_lim")$,
       $italic("num")$,
     ),
-    keywords: algo-keywords,
   )[
     $italic("nns") <- emptyset$ \
     $italic("entries") <- italic("layers")_(|italic("layers")| - 1)$ \
@@ -492,7 +500,6 @@ $
   #algo(
     title: $italic("greedySearchAnns")$,
     parameters: ($G$, $italic("src")$, $italic("qry")$, $italic("num")$, $italic("pool_sz")$),
-    keywords: algo-keywords,
   )[
     $italic("cands") <- (italic("src"))$ \
     $italic("seen") <- emptyset$ \
@@ -627,13 +634,13 @@ $
 
 作者采用了一种朴素的方式来构建 MRNG，即对每个顶点应用选边策略。具体来说，
 #algorithm[MRNG 构建算法][
-给定一个有限的点集 $S subset.eq E_d$。记 $n = |S|$。对每个点 $p in S$：
-+ 将 $S without {p}$ 按 $scripts(<)_p$ 排序，记作 $r = (r_i)_(i = 0)^(n - 2)$。
-+ 设已选择的点形成集合 $A$。初始时，$A = emptyset$。
-+ 让 $i$ 从 $0$ 遍历到 $n - 2$：
-  + 如果存在 $q in A$ 满足 $p r_i$ 不是 $triangle p q r_i$ 中最长的边，即 $delta(p, r_i) < max{delta(p, q), delta(r_i, q)}$，则 $A <- A inter {r_i}$。
+  给定一个有限的点集 $S subset.eq E_d$。记 $n = |S|$。对每个点 $p in S$：
+  + 将 $S without {p}$ 按 $scripts(<)_p$ 排序，记作 $r = (r_i)_(i = 0)^(n - 2)$。
+  + 设已选择的点形成集合 $A$。初始时，$A = emptyset$。
+  + 让 $i$ 从 $0$ 遍历到 $n - 2$：
+    + 如果存在 $q in A$ 满足 $p r_i$ 不是 $triangle p q r_i$ 中最长的边，即 $delta(p, r_i) < max{delta(p, q), delta(r_i, q)}$，则 $A <- A inter {r_i}$。
 
-算法的时间复杂度是 $O(n^2 log n + a dot n^2)$，其中 $a$ 是 MRNG 的平均出度。
+  算法的时间复杂度是 $O(n^2 log n + a dot n^2)$，其中 $a$ 是 MRNG 的平均出度。
 ]<algo:mrng-construction>
 
 前人构造 MSNET 索引的方法的时间复杂度在随机点分布下最少为 $O(n^(2 - 2 / (d + 1) + epsilon) + n^2 log n + n^3)$，@algo:mrng-construction 的时间复杂度比他小得多。
