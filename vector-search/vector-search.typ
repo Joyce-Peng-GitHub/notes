@@ -191,9 +191,9 @@ $
 == Voronoi 划分、Veronoi 图、Delaunay 图
 
 #definition[Voronoi 划分][
-  考虑度量空间 $(X, delta)$。设空间中有一个#strong[有限的]“生成点”集合（实际问题中的已知数据点）$P subset.eq X$。对于任意 $p in P$，其#emph[Veronoi 区域（Voronoi region）]定义为
+  考虑度量空间 $(X, delta)$。设空间中有一个#strong[有限的]“生成点”集合（实际问题中的已知数据点）$P subset.eq X$。对于任意 $p in P$，其#emph[Voronoi 区域（Voronoi region）]定义为
   $
-    V(p) = {x in X: (forall q in X, space q != p) space (delta(x, p) <= delta(x, q))}.
+    V(p) = {x in X: (forall q in P) space (delta(x, p) <= delta(x, q))}.
   $
 ]<def:voronoi-tessellation>
 
