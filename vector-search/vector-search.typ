@@ -1,6 +1,7 @@
 #import "@preview/ctheorems:1.1.3": *
 #show: thmrules
-#import "@preview/algo:0.3.6": algo, code, comment, d, i, no-emph
+
+#import "@preview/algo:0.3.6" as algo
 
 #let thmbox = thmbox.with(breakable: true)
 #let definition = thmbox("definition", "定义")
@@ -52,7 +53,7 @@
   "false",
   "assert",
 )
-#let algo = algo.with(keywords: algo-keywords, breakable: true)
+#let alg = algo.algo.with(keywords: algo-keywords, breakable: true)
 
 #align(center)[
   #text(font: (en-font, cn-font-heading), size: 2em)[
@@ -211,45 +212,45 @@ Delaunay 图是 Voronoi 图的对偶图。
 == 基本贪心算法
 
 #algorithm[基本贪心算法][
-  #algo(
+  #alg(
     title: $italic("greedySearchAnn")$,
     parameters: ($italic("src")$, $italic("qry")$),
   )[
-    while true: #i \
+    while true: #algo.i \
     $italic("best") <- italic("src")$ \
     $d_"min" <- delta(italic("best"), italic("qry"))$ \
-    for $v in italic("src").italic("adjs")$: #i \
+    for $v in italic("src").italic("adjs")$: #algo.i \
     $d <- delta(v, italic("qry"))$ \
-    if $d < d_"min"$: #i \
+    if $d < d_"min"$: #algo.i \
     $italic("best") <- v$\
-    $d_"min" <- d$ #d #d \
-    if $italic("best") = italic("src")$: #i \
-    return $italic("src")$ #d \
+    $d_"min" <- d$ #algo.d #algo.d \
+    if $italic("best") = italic("src")$: #algo.i \
+    return $italic("src")$ #algo.d \
     $italic("src") <- italic("best")$
   ]
 ]<algo:nsw-greedy-anns>
 
 #algorithm[用于 K-ANN 的基本贪心算法][
-  #algo(
+  #alg(
     title: $italic("greedySearchAnns")$,
     parameters: ($italic("qry")$, $italic("num")$, $italic("rep")$),
   )[
     $italic("cands") <- emptyset$ \
     $italic("vis") <- emptyset$ \
     $italic("res") <- emptyset$ \
-    repeat for $italic("rep")$ times: #i \
+    repeat for $italic("rep")$ times: #algo.i \
     randomly select a $italic("src") in X$ and $italic("cands") <- italic("cands") union {italic("src")}$ \
     $italic("tmp_res") <- emptyset$ \
-    while true: #i \
+    while true: #algo.i \
     let $c$ be the closest element to $italic("qry")$ in $italic("cands")$ \
     $italic("cands") <- italic("cands") without {c}$ \
-    if $c$ is further from $italic("qry")$ than the $italic("num")$-th element in $italic("res")$: #i \
-    break #d \
-    for $v in c.italic("adjs")$: #i \
-    if $v in.not italic("vis")$: #i \
+    if $c$ is further from $italic("qry")$ than the $italic("num")$-th element in $italic("res")$: #algo.i \
+    break #algo.d \
+    for $v in c.italic("adjs")$: #algo.i \
+    if $v in.not italic("vis")$: #algo.i \
     $italic("vis") <- italic("vis") union {v}$ \
     $italic("cands") <- italic("cands") union {v}$ \
-    $italic("tmp_res") <- italic("tmp_res") union {v}$ #d #d \
+    $italic("tmp_res") <- italic("tmp_res") union {v}$ #algo.d #algo.d \
     return the nearest $italic("num")$ elements in $italic("res")$
   ]
 
@@ -279,28 +280,28 @@ Motivation 看不懂，先跳过了。
 === 层内搜索算法
 
 #algorithm[层内搜索算法][
-  #algo(
+  #alg(
     title: $italic("searchLayerAnns")$,
     parameters: ($italic("layer")$, $italic("entries")$, $italic("qry")$, $italic("num")$),
   )[
     $italic("vis") <- italic("entries")$ \
     $italic("cands") <- italic("entries")$ \
     $italic("nns") <- italic("entries")$ \
-    while $italic("cands") != emptyset$: #i \
-    let $c$ be the closest element #no-emph[to] $italic("qry")$ in $italic("cands")$ \
+    while $italic("cands") != emptyset$: #algo.i \
+    let $c$ be the closest element #algo.no-emph[to] $italic("qry")$ in $italic("cands")$ \
     let $f$ be the furthest element to $italic("qry")$ in $italic("nns")$ \
-    if $delta(italic("qry"), c) > delta(italic("qry"), f)$: #i \
-    break #d \
-    for $v in c.italic("adjs")$ in $italic("layer")$: #i \
-    if $v in italic("vis")$: #i \
-    continue #d \
+    if $delta(italic("qry"), c) > delta(italic("qry"), f)$: #algo.i \
+    break #algo.d \
+    for $v in c.italic("adjs")$ in $italic("layer")$: #algo.i \
+    if $v in italic("vis")$: #algo.i \
+    continue #algo.d \
     $italic("vis") <- italic("vis") union {v}$ \
     let $f$ be the furthest element to $italic("qry")$ in $italic("nns")$ \
-    if $delta(italic("qry"), v) < delta(italic("qry"), f)$ or $|italic("nns")| < italic("num")$: #i \
+    if $delta(italic("qry"), v) < delta(italic("qry"), f)$ or $|italic("nns")| < italic("num")$: #algo.i \
     $italic("cands") <- italic("cands") union {v}$ \
     $italic("nns") <- italic("nns") union {v}$ \
-    if $|italic("nns")| = italic("num")$: #i \
-    $italic("nns") <- italic("nns") without {f}$ #d #d #d #d \
+    if $|italic("nns")| = italic("num")$: #algo.i \
+    $italic("nns") <- italic("nns") without {f}$ #algo.d #algo.d #algo.d #algo.d \
     return $italic("nns")$
   ]
 ]<algo:hnsw-layer-k_anns>
@@ -308,15 +309,15 @@ Motivation 看不懂，先跳过了。
 === 搜索算法
 
 #algorithm[搜索算法][
-  #algo(
+  #alg(
     title: $italic("searchAnns")$,
     parameters: ($italic("layers")$, $italic("qry")$, $italic("num")$, $italic("lim")$),
   )[
     $italic("nns") <- emptyset$ \
     $italic("entries") <- italic("layers")_(|italic("layers")| - 1)$ \
-    for $l$ from $|italic("layers")| - 1$ down to $1$: #i \
+    for $l$ from $|italic("layers")| - 1$ down to $1$: #algo.i \
     $italic("nns") <- italic("searchLayerAnns")(italic("layers")_l, italic("entries"), italic("qry"), 1)$ \
-    $italic("entries") <- italic("nns")$ #d \
+    $italic("entries") <- italic("nns")$ #algo.d \
     $italic("nns") <- italic("searchLayerAnns")(italic("layers")_0, italic("entries"), italic("qry"), italic("lim"))$ \
     return the nearest $italic("num")$ elements in $italic("nns")$
   ]
@@ -354,7 +355,7 @@ $
 ===== 朴素方法
 
 #algorithm[选择新邻居的朴素方法][
-  #algo(
+  #alg(
     title: $italic("selectNeighborsNaive")$,
     parameters: ($italic("layer")$, $p_"new"$, $italic("cands")$, $italic("new_edge_num")$),
   )[
@@ -369,7 +370,7 @@ $
 - $italic("keep_pruned_edges")$：是否保留被修剪的边。
 
 #algorithm[选择新邻居的启发式算法][
-  #algo(
+  #alg(
     title: $italic("selectNeighborsHeuristic")$,
     parameters: (
       $italic("layer")$,
@@ -381,26 +382,26 @@ $
     ),
   )[
     $italic("neighbors") <- emptyset$ \
-    if $italic("extend_cands")$: #i \
+    if $italic("extend_cands")$: #algo.i \
     $italic("extra_cands") <- emptyset$ \
-    for $italic("cand") in italic("cands")$: #i \
-    for $italic("extra_cand") in italic("cand").italic("adjs")$: #i \
-    $italic("extra_cands") <- italic("extra_cands") union {italic("extra_cand")}$ #d #d \
-    $italic("cands") <- italic("cands") union italic("extra_cands")$ #d \
+    for $italic("cand") in italic("cands")$: #algo.i \
+    for $italic("extra_cand") in italic("cand").italic("adjs")$: #algo.i \
+    $italic("extra_cands") <- italic("extra_cands") union {italic("extra_cand")}$ #algo.d #algo.d \
+    $italic("cands") <- italic("cands") union italic("extra_cands")$ #algo.d \
     $italic("discarded") <- emptyset$ \
-    while $italic("cands") != emptyset$ and $|italic("neighbors")| < italic("new_edge_num")$: #i \
+    while $italic("cands") != emptyset$ and $|italic("neighbors")| < italic("new_edge_num")$: #algo.i \
     let $italic("cand")$ be the nearest element to $p_"new"$ in $italic("cands")$ \
     $italic("cands") <- italic("cands") without {italic("cand")}$ \
     let $italic("neighbor")$ be the nearest element to $p_"new"$ in $italic("neighbors")$ \
-    if $delta(p_"new", italic("cand")) < delta(p_"new", italic("neighbor"))$: #i \
-    $italic("neighbors") <- italic("neighbors") union {italic("cand")}$ #d \
-    else: #i \
-    $italic("discarded") <- italic("discarded") union {italic("cand")}$ #d #d \
-    if $italic("keep_pruned_edges")$: #i \
-    while $italic("discarded") != emptyset$ and $|italic("neighbors") < italic("new_edge_num")$: #i \
+    if $delta(p_"new", italic("cand")) < delta(p_"new", italic("neighbor"))$: #algo.i \
+    $italic("neighbors") <- italic("neighbors") union {italic("cand")}$ #algo.d \
+    else: #algo.i \
+    $italic("discarded") <- italic("discarded") union {italic("cand")}$ #algo.d #algo.d \
+    if $italic("keep_pruned_edges")$: #algo.i \
+    while $italic("discarded") != emptyset$ and $|italic("neighbors") < italic("new_edge_num")$: #algo.i \
     let $italic("cand")$ be the nearest element to $p_"new"$ in $italic("discarded")$ \
     $italic("discarded") <- italic("discarded") without {italic("cand")}$ \
-    $italic("neighbors") <- italic("neighbors") union {italic("cand")}$ #d #d \
+    $italic("neighbors") <- italic("neighbors") union {italic("cand")}$ #algo.d #algo.d \
     return $italic("neighbors")$
   ]
 ]<algo:hnsw-select-neighbors-heuristic>
@@ -408,7 +409,7 @@ $
 ==== 插入算法
 
 #algorithm[插入算法][
-  #algo(
+  #alg(
     title: $italic("insert")$,
     parameters: (
       $italic("layers")$,
@@ -423,19 +424,19 @@ $
     $italic("entries") <- italic("layers")_(|italic("layers")| - 1)$ \
     $u ~ U(0, 1)$ \
     $l_"m" <- floor((ln u) / (ln p_"e"))$ \
-    for $l$ from $|italic("layers")| - 1$ down to $l_"m" + 1$: #i \
+    for $l$ from $|italic("layers")| - 1$ down to $l_"m" + 1$: #algo.i \
     $italic("nns") <- italic("searchLayerAnns")(italic("layers")_l, italic("entries"), p_"new", 1)$ \
-    $italic("entries") <- italic("nns")$ #d \
-    for $l$ from $min{l_"m", |italic("layers")| - 1}$ down to $0$: #i \
+    $italic("entries") <- italic("nns")$ #algo.d \
+    for $l$ from $min{l_"m", |italic("layers")| - 1}$ down to $0$: #algo.i \
     $italic("nns") <- italic("searchLayerAnns")(italic("layers")_l, italic("entries"), p_"new", italic("num"))$ \
     $italic("neighbors") <- italic("selectNeighbors")(p_"new", italic("nns"), italic("new_edge_num"))$ \
     $V(italic("layers")_l) <- V(italic("layers")_l) union {p_"new"}$ \
-    for $italic("neighbor") in italic("neighbors")$: #i \
+    for $italic("neighbor") in italic("neighbors")$: #algo.i \
     $E(italic("layers")_l) <- E(italic("layers")_l) union {(p_"new", italic("neighbor")), (italic("neighbor"), p_"new")}$ \
-    if $deg italic("neighbor") > italic("deg_lim")$: #i \
-    $italic("neighbor").italic("adjs") <- italic("selectNeighbors")(italic("layers")_l, italic("neighbor"), italic("neighbor").italic("adjs"), italic("deg_lim"))$ #d #d \
-    $italic("entries") <- italic("nns")$ #d \
-    for $l in NN inter [ |italic("layers")|, l_"m"]$: #i \
+    if $deg italic("neighbor") > italic("deg_lim")$: #algo.i \
+    $italic("neighbor").italic("adjs") <- italic("selectNeighbors")(italic("layers")_l, italic("neighbor"), italic("neighbor").italic("adjs"), italic("deg_lim"))$ #algo.d #algo.d \
+    $italic("entries") <- italic("nns")$ #algo.d \
+    for $l in NN inter [ |italic("layers")|, l_"m"]$: #algo.i \
     $italic("layers")_l <- ({p_"new"}, emptyset)$
   ]
 ]<algo:hnsw-insert>
@@ -499,26 +500,26 @@ $
 这篇论文#strong[只考虑欧几里得空间]。
 
 #algorithm[贪心搜索算法][
-  #algo(
+  #alg(
     title: $italic("greedySearchAnns")$,
     parameters: ($G$, $italic("src")$, $italic("qry")$, $italic("num")$, $italic("pool_sz")$),
   )[
     $italic("cands") <- (italic("src"))$ \
     $italic("seen") <- emptyset$ \
     $italic("checked") <- emptyset$ \
-    while true: #i \
+    while true: #algo.i \
     $italic("fst") <- 0$ \
-    while $italic("fst") < |italic("cands")|$ and $italic("cands")_italic("fst") in italic("checked")$: #i \
-    $italic("fst") <- italic("fst") + 1$ #d \
-    if $italic("fst") = |italic("cands")|$: #i \
-    break #d \
+    while $italic("fst") < |italic("cands")|$ and $italic("cands")_italic("fst") in italic("checked")$: #algo.i \
+    $italic("fst") <- italic("fst") + 1$ #algo.d \
+    if $italic("fst") = |italic("cands")|$: #algo.i \
+    break #algo.d \
     $italic("checked") <- italic("checked") union {italic("cands")_italic("fst")}$ \
-    for $italic("neighbor") in V(G)$ s.t. $(italic("cands")_italic("fst"), italic("neighbor")) in E(G)$: #i \
-    if $italic("neighbor") in.not italic("seen")$: #i \
+    for $italic("neighbor") in V(G)$ s.t. $(italic("cands")_italic("fst"), italic("neighbor")) in E(G)$: #algo.i \
+    if $italic("neighbor") in.not italic("seen")$: #algo.i \
     $italic("seen") <- italic("seen") union {italic("neighbor")}$ \
-    $italic("cands") <- mat(italic("cands"); italic("neighbor"))$ #d #d \
+    $italic("cands") <- mat(italic("cands"); italic("neighbor"))$ #algo.d #algo.d \
     sort $italic("cands")$ by distance to $italic("qry")$ \
-    keey only the first $italic("pool_sz")$ elements in $italic("cands")$ #d \
+    keey only the first $italic("pool_sz")$ elements in $italic("cands")$ #algo.d \
     return the first $italic("num")$ elements in $italic("cands")$
   ]
 ]<algo:nsg-greedy-k_anns>
@@ -664,7 +665,7 @@ $
     + 按照 MRNG 的选边策略，从候选集中选出最多 $Delta^+(italic("NSG"))$（人为设置的参数，即构建出的 $italic("NSG")$ 的最大出度）个邻居。
   + 在以上步骤构建出的图上，生成从导航节点出发的 DFS 树。如果还有孤立的点，就将他们连到通过执行 @algo:nsg-greedy-k_anns 获得的近似最近邻上，然后继续 DFS。
 
-  #algo(
+  #alg(
     title: $italic("buildNsg")$,
     parameters: ($G$, $Delta^+(italic("NSG"))$, $italic("pool_sz")$),
     breakable: true,
@@ -673,38 +674,38 @@ $
     let $italic("rand")$ be a random vertex in $V(G)$ \
     ${italic("nav")} <- italic("greedySearchAnns")(G, italic("rand"), c, 1, italic("pool_sz"))$ \
     $italic("NSG") <- (V(G), emptyset)$ \
-    for $v in V(G)$ #i \
+    for $v in V(G)$ #algo.i \
     let $italic("vis")$ be the set of all the vertices visited when perfoming $italic("greedySearchAnns")(G, italic("nav"), v, 1, italic("pool_sz"))$ \
     $italic("vis") <- italic("vis") union {italic("neighbor") in V(G): (v, italic("neighbor")) in E(G)}$ \
     let $italic("vis")$ be the sorted list of $italic("vis")$ by $scripts(<)_v$ \
     $italic("res") <- emptyset$ \
-    for $i$ from $0$ to $|italic("vis")| - 1$: #i \
-    if $|italic("res")| == Delta^+(italic("NSG"))$: #i \
-    break #d \
+    for $i$ from $0$ to $|italic("vis")| - 1$: #algo.i \
+    if $|italic("res")| == Delta^+(italic("NSG"))$: #algo.i \
+    break #algo.d \
     $italic("has_conflict") <-$ false \
-    for $r in italic("res")$: #i \
+    for $r in italic("res")$: #algo.i \
     assert $delta(v, r) <= delta(v, italic("vis")_i)$, i.e., $r in B(v, delta(v, italic("vis")_i))$ \
-    if $delta(r, italic("vis")_i) < delta(v, italic("vis")_i)$: #i \
+    if $delta(r, italic("vis")_i) < delta(v, italic("vis")_i)$: #algo.i \
     assert $r in italic("lune")(v, italic("vis")_i) = B(v, delta(v, italic("vis")_i)) inter B(italic("vis")_i, delta(v, italic("vis")_i))$
     $italic("has_conflict") <-$ true \
-    break #d #d \
-    if $italic("has_conflict")$: #i \
-    continue #d \
+    break #algo.d #algo.d \
+    if $italic("has_conflict")$: #algo.i \
+    continue #algo.d \
     $italic("res") <- italic("res") union {italic("vis")_i}$ \
-    $E(italic("NSG")) <- E(italic("NSG")) union {(v, italic("vis")_i)}$ #d #d \
+    $E(italic("NSG")) <- E(italic("NSG")) union {(v, italic("vis")_i)}$ #algo.d #algo.d \
     $italic("vis") <- emptyset$ \
-    func $italic("dfs")(italic("cur"))$: #i \
+    func $italic("dfs")(italic("cur"))$: #algo.i \
     $italic("vis") <- italic("vis") union {italic("cur")}$ \
-    for $italic("nxt") in V(italic("NSG"))$  s.t. $(italic("cur"), italic("nxt")) in E(italic("NSG"))$: #i \
-    if $italic("nxt") in.not italic("vis")$: #i \
-    $italic("dfs")(italic("nxt"))$ #d #d #d \
+    for $italic("nxt") in V(italic("NSG"))$  s.t. $(italic("cur"), italic("nxt")) in E(italic("NSG"))$: #algo.i \
+    if $italic("nxt") in.not italic("vis")$: #algo.i \
+    $italic("dfs")(italic("nxt"))$ #algo.d #algo.d #algo.d \
     $italic("dfs")(italic("nav"))$ \
-    while $|italic("vis")| < |V(italic("NSG"))|$: #i \
+    while $|italic("vis")| < |V(italic("NSG"))|$: #algo.i \
     let $v$ be any vertex in $V(italic("NSG")) without italic("vis")$ \
     ${italic("ann")} <- italic("greedySearchAnns")(italic("NSG"), italic("nav"), v, 1, italic("pool_sz"))$ \
     assert $italic("ann") in italic("vis")$ \
     $E(italic("NSG")) <- E(italic("NSG")) union {(italic("ann"), v)}$ \
-    $italic("dfs")(v)$ #d \
+    $italic("dfs")(v)$ #algo.d \
     return $italic("NSG")$
   ]
 ]<algo:nsg-construction>
