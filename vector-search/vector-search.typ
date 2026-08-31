@@ -37,7 +37,10 @@
   let content = if pos-args.len() > 0 { pos-args.at(0) } else { dest }
   link(dest, text(fill: rgb("#1a73e8"), content))
 }
+
 #set math.mat(delim: "[")
+#show figure.where(kind: image): set figure(supplement: "图")
+#show figure.where(kind: table): set figure(supplement: "表")
 
 #let algo-keywords = (
   "func",
