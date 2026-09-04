@@ -369,7 +369,7 @@ $
 ===== 启发式算法
 
 额外的参数：
-- $italic("extend_cands")$：是否扩展候选集，只适合再数据高度集中时设为真。
+- $italic("extend_cands")$：是否扩展候选集，只适合在数据高度集中时设为真。
 - $italic("keep_pruned_edges")$：是否保留被修剪的边。
 
 #algorithm[选择新邻居的启发式算法][
