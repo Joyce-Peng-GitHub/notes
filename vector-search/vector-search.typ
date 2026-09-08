@@ -87,7 +87,7 @@
 == 欧几里得空间
 
 #definition[欧几里得空间][
-  设 $V$ 是有限维实内积空间（这保证了内积的值域必然是 $[0, +infinity)$），则称 $V$ 是一个#emph[欧几里得空间（Euclidean space）]。可以定义范数
+  设 $V$ 是有限维实内积空间（这保证了每个向量与自己内积的值必然在 $[0, +infinity)$，即满足正定性），则称 $V$ 是一个#emph[欧几里得空间（Euclidean space）]。可以定义范数
   $
     || dot ||_2: x |-> sqrt(chev(x, x)) space (x in V),
   $
@@ -477,7 +477,7 @@ $
 
 论文说插入一个新点只不过是在各层上执行层内近似 KNN 搜索，并使用启发式的 @algo:hnsw-select-neighbors-heuristic 筛选邻居。固定 $italic("num")$ 时，@algo:hnsw-select-neighbors-heuristic 的复杂度是 $O(1)$。一个新点参与的层数的期望
 $
-  expect(l_m + 1) = 1 / p_"e" + 1
+  expect(l_m + 1) = 1 / (1 - p_"e")
 $
 #h(-indent) 与数据规模 $n$ 无关。因此，至少对于相对低维的数据（我不知道为甚么有这个限制），建图的总复杂度为 $O(n log n)$。
 
@@ -644,7 +644,7 @@ $
   + 将 $S without {p}$ 按 $scripts(<)_p$ 排序，记作 $r = (r_i)_(i = 0)^(n - 2)$。
   + 设已选择的点形成集合 $A$。初始时，$A = emptyset$。
   + 让 $i$ 从 $0$ 遍历到 $n - 2$：
-    + 如果存在 $q in A$ 满足 $p r_i$ 不是 $triangle p q r_i$ 中最长的边，即 $delta(p, r_i) < max{delta(p, q), delta(r_i, q)}$，则 $A <- A inter {r_i}$。
+    + 如果存在 $q in A$ 满足 $p r_i$ 不是 $triangle p q r_i$ 中最长的边，即 $delta(p, r_i) < max{delta(p, q), delta(r_i, q)}$，则 $A <- A union {r_i}$。
 
   算法的时间复杂度是 $O(n^2 log n + a dot n^2)$，其中 $a$ 是 MRNG 的平均出度。
 ]<algo:mrng-construction>
