@@ -1,4 +1,4 @@
-# 2026 ICPC Asia EC Priliminary Round 2
+# 2026 ICPC Asia EC Preliminary Round 2
 
 这把坐牢……
 
