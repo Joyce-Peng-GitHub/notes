@@ -61,7 +61,7 @@
 #align(center)[
   #text(font: (en-font, cn-font-heading), size: 2em)[
     向量检索
-  ],
+  ]
 ]
 
 #outline(indent: auto, title: "目录")
