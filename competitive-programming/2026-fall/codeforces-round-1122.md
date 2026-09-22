@@ -109,3 +109,53 @@ inline void solve() {
 时间复杂度：$\Theta(n \log n)$。
 
 空间复杂度：排序所需的空间 $O(\log n)$。
+
+## E. Prime Destruction
+
+> 给定一个由 $n \in \mathbb{N}^*$ 个不超过 $n$ 的正整数构成的多重集 $S$ 和 $m \in \mathbb{N}^*\ (m \leq n)$。每次操作中，可以选择一个整数 $x > 1$ 和 $x$ 的一个质因数 $p$，从 $S$ 中移除**一个** $x$ 再加入 $p$ 个 $\frac{x}{p}$。可以进行任意有限次操作，求使 $S$ 的所有元素都不超过 $m$ 所需的最小操作次数。
+>
+> 保证 $n \leq 2 \times 10^5$。
+
+这里的子问题结构是很明显的：将任何一个 $x$ 分解直至全都不超过 $m$，可以枚举其所有质因数 $p$，此时的次数为分解 $p$ 个 $\frac{x}{p}$ 所需的次数。对所有 $p$ 取操作次数最小的作为答案。
+
+考虑模仿埃氏筛的思路进行枚举。
+
+```cpp
+constexpr uint32_t N = 2e5;
+std::vector<uint32_t> primes;
+
+inline void solve() {
+	uint32_t m, n;
+	std::cin >> n >> m;
+	std::vector<uint64_t> dp(n + 1);
+	for (uint32_t i = m + 1; i <= n; ++i) {
+		dp[i] = UINT64_MAX;
+	}
+	for (uint64_t i = 1; i <= n; ++i) {
+		for (auto prime : primes) {
+			auto val = i * prime;
+			if (val > n) {
+				break;
+			}
+			dp[val] = std::min(dp[val], dp[i] * prime + 1);
+		}
+	}
+	uint64_t ans = 0;
+	for (uint32_t i = 0; i < n; ++i) {
+		uint32_t qry;
+		std::cin >> qry;
+		ans += dp[qry];
+	}
+	std::cout << ans << '\n';
+}
+```
+
+可以容易计算出时间复杂度的一个上界：即使内层循环我们枚举所有 $\mathbb{N} \cap \left[1, \frac{m}{i}\right]$ 而非质数，时间复杂度也为
+$$
+\sum_{i = 1}^n \frac{m}{i} \leq m \log n,
+$$
+所以时间复杂度为 $O(m \log n)$。实际上由于质数的数量是 $o(n)$ 的，所以总的复杂度也要小得多。
+
+总的时间复杂度还取决于选用的质数筛。
+
+空间复杂度：$\Theta(n)$。
