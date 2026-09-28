@@ -14,10 +14,11 @@
 #let argmax = $limits(op("argmax"), inline: #false)$
 #let diam = $op("diam")$
 #let conv = $op("conv")$
-#let powset(..args) = $scr(P)(#args.pos().join($,$))$
+#let sch = $op("sch")$
+#let powset = $scr(P)$
 #let chev(..args) = $lr(chevron.l #args.pos().join($,$) chevron.r)$
-#let prob(..args) = $PP(#args.pos().join($,$))$
-#let expect(..args) = $EE(#args.pos().join($,$))$
+#let prob = $PP$
+#let expect = $EE$
 
 #let en-font = "New Computer Modern"
 #let cn-font-body = "Noto Serif SC"
