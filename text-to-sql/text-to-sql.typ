@@ -71,6 +71,68 @@
 
 = 基本概念
 
+== 数据模型
+
+#definition[关系代数][
+  + 值、属性与域：
+
+    设
+    - $cal(A)$ 是所有属性名的集合。
+    - $cal(V)$ 是所有可能的值的集合。
+    - 对每个属性 $A in cal(A)$，给定其#emph[值域] $italic("Dom")(A) subset.eq cal(V)$。
+
+  + 关系模式：
+
+    $(R, U)$ 称为一个#emph[关系模式]，其中 $U subset.eq cal(A)$ 是一个有限的属性集，#emph[模式名] $R$ 是为了允许不同的关系模式使用相同的属性集而为关系模式赋予的唯一的名字。
+
+  + 元组：
+
+    称一个函数 $t: U -> cal(V)$ 是一个 #emph[$U$-元组]，如果他满足
+    $
+      (forall A in U) space (t(A) in italic("Dom")(A)).
+    $
+
+    记所有合法的 $U$-元组构成的集合为
+    $
+      italic("Tuple")(U) = {t in cal(V)^U: (forall A in U) space (t(A) in italic("Dom")(A))}.
+    $
+  
+  + 关系实例：
+
+    关系模式 $(R, U)$ 上的一个有限集合 $r subset.eq italic("Tuple")(U)$ 称为关系模式 $R$ 的一个#emph[关系实例]，其模式记为 $sch(r) = U$。
+  
+  + 数据库模式与实例：
+
+    设 $cal(R)$ 为有限个关系名的集合。称一个 $cal(S): cal(R) -> powset_"fin" (cal(A)))$ 是一个#emph[数据库模式]，其中 $powset_"fin": S |-> {P subset.eq powset(S): |P| in NN}$，于是 $cal(S)(R) space (R in cal(R))$ 就表示 $R$ 的属性集。为了表达完整性约束，可以定义为 $bold(S) = (cal(S), Gamma)$，其中 $Gamma$ 是一组约束。数据库模式 $bold(S) = (cal(S), Gamma)$ 上的#emph[数据库实例]的集合定义为
+    $
+      italic("Inst")(bold(S)) = {I: (I: R |-> italic("Tuple")(cal(S)(R)) space (R in cal(R))) and I tack.rr Gamma}.
+    $
+  
+  + 基本算子：
+
+    设 $(R, U)$ 是一个关系模式。
+    
+    设谓词 $phi$ 的自由属性包含于 $U$，定义#emph[投影]算子
+    $
+      sigma_phi: r |-> {t in r: t tack.rr phi} space (r subset.eq italic("Tuple")(U)).
+    $
+
+    设 $V subset.eq U$，定义#emph[投影]算子
+    $
+      pi_V: r |-> {t harpoon.tr V: t in r} space (r subset.eq italic("Tuple")(U)).
+    $
+
+    取新的有限属性集 $V subset.eq cal(A)$，设 $rho.alt: U -> V$ 是保持值域的双射（即 $(forall A in U) space (italic("Dom")(A) = italic("Dom")(rho.alt(A)))$)，定义#emph[重命名]算子
+    $
+      rho_rho.alt: r |-> {t compose rho.alt^(-1): t in r} space (r subset.eq italic("Tuple")(U)).
+    $
+
+    设关系模式 $(S, V)$ 满足 $U inter V = nothing$。定义#emph[笛卡尔积]算子
+    $
+      times: (r, s) |-> {t in italic("Tuple")(U union V): t harpoon.tr U in r and t harpoon.tr V in s} space (r in italic("Tuple")(U) and s in italic("Tuple")(V)).
+    $
+]<def:relational-algebra>
+
 = OmniTQA @shahbazi2026textualcolumnsqueryplans
 
 #pagebreak()
