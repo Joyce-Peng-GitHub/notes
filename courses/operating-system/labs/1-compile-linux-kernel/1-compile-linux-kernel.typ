@@ -112,7 +112,7 @@
 
 从 #ext_link("https://fedoraproject.org/")[Fedora 官网] 下载系统镜像。当前最新稳定版本为 Fedora 44。安装到 VMware Workstation。
 
-== 查看当前内核版本
+== 检查内核版本
 
 执行命令 `uname -a`，结果如 @img:init-kernel-version 所示。
 #figure(
@@ -126,18 +126,18 @@
 从 #ext_link("https://kernel.org/")[The Linux Kernel Archives 网站] 下载 Linux 内核源码。当前最新稳定版本为 7.2.9。
 
 + 下载：
-  ```shell
+  ```sh
   curl -fLO https://cdn.kernel.org/pub/linux/kernel/v7.x/linux-7.2.9.tar.xz
   ```
 + 解压：
-  ```shell
+  ```sh
   tar -xf linux-7.2.9.tar.xz
   ```
 
 == 配置
 
-使用现有内核配置，添加自定义的版本后缀（我使用 `"-joyce"`）：
-```shell
+复制当前系统内核的配置，添加版本后缀 `"-joyce"`：
+```sh
 cp /boot/config-$(uname -r) .config
 
 ./scripts/config --set-str LOCALVERSION "-joyce"
@@ -151,9 +151,9 @@ make -s kernelrelease
 
 == 编译内核
 
-执行 `make -j"$(nproc)"`。
+执行 `make -j"$(nproc)"` 进行并行构建。
 
-编译结果如 @img:compile-result 所示：生成 `bzImage` 文件，版本号符合之前的配置。
+编译结果如 @img:compile-result 所示，生成了 `bzImage` 文件。
 #figure(
   caption: [内核编译结果],
 )[
@@ -163,15 +163,15 @@ make -s kernelrelease
 == 安装模块和内核
 
 执行命令：
-```shell
+```sh
 sudo make modules_install
 sudo make install
 ```
 
 == 启动新内核
 
-设置新内核为默认内核：
-```shell
+将编译出的新内核设置为默认内核：
+```sh
 sudo grubby --set-default="/boot/vmlinuz-7.2.9-joyce"
 ```
 
@@ -181,7 +181,7 @@ sudo grubby --set-default="/boot/vmlinuz-7.2.9-joyce"
   #image("assets/install-result.png")
 ]<img:install-result>
 
-重启系统，执行 `uname -a` 查看当前内核版本，结果如 @img:launch-result 所示。
+重启虚拟机，执行 `uname -a` 查看当前内核版本，结果如 @img:launch-result 所示。
 
 #figure(
   caption: [启动新内核],
@@ -191,11 +191,11 @@ sudo grubby --set-default="/boot/vmlinuz-7.2.9-joyce"
 
 = 实验结果及分析
 
-内核版本显示为 `7.2.9-joyce`，符合预期。
+切换后的内核版本号显示为我们自定义的 `7.2.9-joyce`，实验结果符合预期。
 
 = 实验收获与体会
 
-第一次安装虚拟机时，即使是安装引导程序都卡得要死，令我非常困惑。后来我发现原来是因为我只给他开了 1 个逻辑处理器，增加后就没事了。但我还是不太理解，难道 VMware 默认值是是开 1 个吗？
+第一次安装虚拟机时，即使是安装引导程序都卡得要死，令我非常困惑。后来我发现原来是因为我只给他开了 1 个逻辑处理器，增加后就没事了。但我还是不太理解，难道 VMware 默认值是是只开 1 个吗？
 
 我为虚拟机分配了 8 GB 内存、24 个逻辑处理器，我的 CPU 还是 14 代 i9；即便如此，编译内核仍然花了相当长的时间。不过，考虑到这是一个操作系统的内核，以及虚拟机的性能损失，好像也不算太久。
 
