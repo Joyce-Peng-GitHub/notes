@@ -326,6 +326,8 @@ Text-to-SQL 方法在结构化的数据库上执行得非常高效，但他们�
 
 作者没有针对 LLM 给出不存在的属性名、表名的幻觉问题给出修复。Agent 系统则会将报错反馈给模型，从而允许模型自行修正。不过，这么点小事都出幻觉得模型，就算接入 agent 也是个废物罢？
 
+值得注意的是，这篇 2026 年 4 月的文章以非常谨慎的态度说，自己用了 ChatGPT 和 Copilot（这是甚么废物？也配和 ChatGPT 大人并列？）来编码和优化论文，而且内容都仔细地人工审核和编辑过，以确保“it adheres to our standards and aligns with our research objectives”（？）。
+
 #pagebreak()
 
 #bibliography(
