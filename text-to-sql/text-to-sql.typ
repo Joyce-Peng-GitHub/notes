@@ -328,6 +328,24 @@ Text-to-SQL 方法在结构化的数据库上执行得非常高效，但他们�
 
 值得注意的是，这篇 2026 年 4 月的文章以非常谨慎的态度说，自己用了 ChatGPT 和 Copilot（这是甚么废物？也配和 ChatGPT 大人并列？）来编码和优化论文，而且内容都仔细地人工审核和编辑过，以确保“it adheres to our standards and aligns with our research objectives”（？）。
 
+= LOTUS @patel2025semanticoperatorsdeclarativemodel
+
+截至目前，这篇论文的代码库已有 $1.7 "k"$ stars，看起来很厉害。
+
+看完摘要部分 #cite(<patel2025semanticoperatorsdeclarativemodel>, supplement: [Abstract])，感觉这篇论文似乎是 OmniTQA @shahbazi2026textualcolumnsqueryplans 的基础？看起来思路很相似，都是将 LLM 语义操作抽象为算子。
+
+== 引入
+
+作者给出了几种典型的#emph[大规模语义处理（bulk-semantic processing）]的应用场景，也就是分析系统必须处理大量的数据并在整个数据集上应用基于语义的分析。用高效易用的分析系统支撑起这类应用的完全的一般性将会带来革命性的影响。这一设想提出了两个挑战：
++ 开发者如何表达语义查询？
++ 如何设计底层的（underlying）分析系统，以达到高的效率和准确率？
+
+不幸的是，现有的系统#strike[都是废物]。
+
+作者首次提出对通用的基于 AI 的多行变换的形式化（即语义算子），每个算子有一个由程序员提供的简明的自然语言签名（？），其行为则由一套易处理的、高质量的#emph[黄金算法]（？）完全确定，而这套算法揭示了如何在数据上编排底层的（underlying） AI 模型。作者的优化方法则利用语义算子执行计划的丰富设计空间来减少成本，同时提供与黄金算法同等的#emph[统计学准确度保证]（保证优化后的算子输出与黄金算法相似的结果）。作者将他们的语义算子实现为开源的 LOTUS（LLMs Over Tables of Unstructured and Structured Data），并将语义算子暴露为一套简单的基于 `DataFrame` 的编程接口。
+
+作者自称他们的 LOTUS 屌爆了。
+
 #pagebreak()
 
 #bibliography(
