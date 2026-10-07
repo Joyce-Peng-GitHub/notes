@@ -30,9 +30,21 @@
 #let spacing = 22pt
 #let body-size = 12pt
 #let heading-size = 14pt
+#let header-size = 10.5pt
 #let title-size = 18pt
 
-#set page(margin: 2cm)
+#set page(
+  margin: 2cm,
+  header: block(
+    width: 100%,
+    stroke: (bottom: 0.8pt + black),
+    inset: (bottom: 5pt),
+    align(center)[
+      #text(size: header-size)[操作系统课程实验报告]
+    ],
+  ),
+  numbering: "1"
+)
 #set text(font: (cn-font-body, en-font), size: body-size)
 #show heading: set text(font: (cn-font-heading, en-font), size: heading-size)
 #show heading: set block(below: spacing)
