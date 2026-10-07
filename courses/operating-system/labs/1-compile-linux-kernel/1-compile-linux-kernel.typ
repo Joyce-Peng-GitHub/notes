@@ -134,6 +134,12 @@
   tar -xf linux-7.2.9.tar.xz
   ```
 
+== 安装相关工具
+
+```sh
+sudo dnf install gcc make flex bison bc openssl-devel elfutils-libelf-devel ncurses-devel dwarves perl python3 grubby dracut mokutil
+```
+
 == 配置
 
 复制当前系统内核的配置，添加版本后缀 `"-joyce"`：
