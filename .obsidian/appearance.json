@@ -1,0 +1,8 @@
+{
+  "theme": "obsidian",
+  "cssTheme": "One Dark Pro",
+  "textFontFamily": "NewComputerModern10,Latin Modern Math,Noto Serif SC,Microsoft YaHei",
+  "monospaceFontFamily": "Ubuntu Sans Mono,Lucida Console,Consolas",
+  "baseFontSizeAction": true,
+  "showRibbon": false
+}
