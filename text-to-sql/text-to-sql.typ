@@ -1,66 +1,8 @@
-#import "@preview/ctheorems:1.1.3": *
-#show: thmrules
-
-#import "@preview/algo:0.3.6" as algo
-
-#let thmbox = thmbox.with(breakable: true)
-#let definition = thmbox("definition", "定义")
-#let theorem = thmbox("theorem", "定理")
-#let lemma = thmbox("lemma", "引理")
-#let proof = thmproof("proof", "证明")
-#let algorithm = thmbox("algorithm", "算法")
-
-#let argmin = $limits(op("argmin"), inline: #false)$
-#let argmax = $limits(op("argmax"), inline: #false)$
-#let diam = $op("diam")$
-#let conv = $op("conv")$
-#let sch = $op("sch")$
-#let powset = $scr(P)$
-#let chev(..args) = $lr(chevron.l #args.pos().join($,$) chevron.r)$
-#let prob = $PP$
-#let expect = $EE$
-
-#let en-font = "New Computer Modern"
-#let cn-font-body = "Noto Serif SC"
-#let cn-font-heading = "Noto Sans SC"
-#let cn-font-emph = "KaiTi"
-
-#set page(margin: 2cm)
-#set text(font: (en-font, cn-font-body))
-#show emph: set text(font: (en-font, cn-font-emph), style: "normal")
-#let indent = 2em
-#set par(first-line-indent: (amount: indent, all: true))
-#set heading(numbering: "1.")
-#set underline(offset: 2pt)
-#show link: underline
-#let ext_link(dest, ..args) = {
-  let pos-args = args.pos()
-  let content = if pos-args.len() > 0 { pos-args.at(0) } else { dest }
-  link(dest, text(fill: rgb("#1a73e8"), content))
-}
-
-#set math.mat(delim: "[")
-#show figure.where(kind: image): set figure(supplement: "图")
-#show figure.where(kind: table): set figure(supplement: "表")
-
-#let algo-keywords = (
-  "func",
-  "if",
-  "else",
-  "for",
-  "while",
-  "break",
-  "continue",
-  "return",
-  "let",
-  "true",
-  "false",
-  "assert",
-)
-#let alg = algo.algo.with(keywords: algo-keywords, breakable: true)
+#import "../typst-templates/zh.typ": *
+#show: template
 
 #align(center)[
-  #text(font: (en-font, cn-font-heading), size: 2em)[
+  #text(font: (en-font, cn-font-title), size: 2em)[
     Text-to-SQL
   ]
 ]
@@ -345,6 +287,10 @@ Text-to-SQL 方法在结构化的数据库上执行得非常高效，但他们�
 作者首次提出对通用的基于 AI 的多行变换的形式化（即语义算子），每个算子有一个由程序员提供的简明的自然语言签名（？），其行为则由一套易处理的、高质量的#emph[黄金算法]（？）完全确定，而这套算法揭示了如何在数据上编排底层的（underlying） AI 模型。作者的优化方法则利用语义算子执行计划的丰富设计空间来减少成本，同时提供与黄金算法同等的#emph[统计学准确度保证]（保证优化后的算子输出与黄金算法相似的结果）。作者将他们的语义算子实现为开源的 LOTUS（LLMs Over Tables of Unstructured and Structured Data），并将语义算子暴露为一套简单的基于 `DataFrame` 的编程接口。
 
 作者自称他们的 LOTUS 屌爆了。
+
+== 语义算子模型
+
+作者将关系系统（作者在这里甚至引用了最初提出关系数据库的论文）的#emph[模型-数据独立（model-data independence）]拓展到了语义算子，将应用逻辑从底层的基于机器学习的算法和规定了数据如何传给模型调用的访问模式中分离出来。但与关系算子不同的是，语义算子由自然语言表达式提供参数且依赖基于 AI 的计算，因此他们的行为固有地模糊且不精确。
 
 #pagebreak()
 
