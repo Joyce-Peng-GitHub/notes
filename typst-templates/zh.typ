@@ -17,5 +17,6 @@
   show emph: set text(font: (en-font, cn-font-emph), style: "normal")
   show figure.where(kind: image): set figure(supplement: "图")
   show figure.where(kind: table): set figure(supplement: "表")
+  set bibliography(title: "参考文献")  
   body
 }

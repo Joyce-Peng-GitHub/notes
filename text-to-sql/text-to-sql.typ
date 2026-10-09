@@ -294,8 +294,4 @@ Text-to-SQL 方法在结构化的数据库上执行得非常高效，但他们�
 
 #pagebreak()
 
-#bibliography(
-  "references.bib",
-  title: "参考文献",
-  full: true,
-)
+#bibliography("references.bib")

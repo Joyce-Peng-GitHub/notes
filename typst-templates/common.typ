@@ -46,5 +46,6 @@
   set underline(offset: 2pt)
   show link: underline
   set math.mat(delim: "[")
+  set bibliography(full: true)
   body
 }

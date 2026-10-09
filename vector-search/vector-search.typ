@@ -1033,8 +1033,4 @@ HCNNG 提出使用有引导的搜索来缓解第二个问题，而非像最佳�
 
 #pagebreak()
 
-#bibliography(
-  "references.bib",
-  title: "参考文献",
-  full: true,
-)
+#bibliography("references.bib")
