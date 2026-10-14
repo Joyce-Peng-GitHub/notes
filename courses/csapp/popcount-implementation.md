@@ -33,14 +33,14 @@ unsigned brianKernighan(uint32_t n) {
 unsigned swarNaive(uint32_t n) {
 	n = (n & 0x55555555) + ((n >> 1) & 0x55555555); // 2 位一组
 	n = (n & 0x33333333) + ((n >> 2) & 0x33333333); // 4 位一组
-	n = (n & 0x0F0F0F0F) + ((n >> 4) & 0x0F0F0F0F); // 8 位一组
-	n = (n & 0x00FF00FF) + ((n >> 8) & 0x00FF00FF); // 16 位一组
-	n = (n & 0x0000FFFF) + ((n >> 16) & 0x0000FFFF); // 32 位一组
+	n = (n & 0x0f0f0f0f) + ((n >> 4) & 0x0f0f0f0f); // 8 位一组
+	n = (n & 0x00ff00ff) + ((n >> 8) & 0x00ff00ff); // 16 位一组
+	n = (n & 0x0000ffff) + ((n >> 16) & 0x0000ffff); // 32 位一组
 	return n;
 }
 ```
 
-代码中 `0x55` 对应二进制 `0b01010101`，`0x33` 对应 `0b00110011`，`0x0F` 对应 `0b00001111`，等等。
+代码中 `0x55` 对应二进制 `0b01010101`，`0x33` 对应 `0b00110011`，`0x0f` 对应 `0b00001111`，等等。
 
 - 时间复杂度：$\Theta(1)$。
 - 空间复杂度：$\Theta(1)$。
@@ -80,9 +80,9 @@ b + 1 \leq 2^{b - 1} \iff b \geq 3
 $$
 时无需先按位与再相加。因此可以依次简化为
 ```cpp
-n = ((n + (n >> 4)) & 0x0F0F0F0F)
-n = ((n + (n >> 8)) & 0x00FF00FF);
-n = ((n + (n >> 16)) & 0x0000FFFF);
+n = ((n + (n >> 4)) & 0x0f0f0f0f)
+n = ((n + (n >> 8)) & 0x00ff00ff);
+n = ((n + (n >> 16)) & 0x0000ffff);
 ```
 
 #### 第三个优化
@@ -104,7 +104,7 @@ n = (n * 0x01010101) >> 24;
 unsigned swar(uint32_t n) {
 	n = n - ((n >>1) & 0x55555555);
 	n = (n & 0x33333333) + ((n >> 2) & 0x33333333);
-	n = (n + (n >> 4)) & 0x0F0F0F0F;
+	n = (n + (n >> 4)) & 0x0f0f0f0f;
 	return (n * 0x01010101) >> 24;
 }
 ```
@@ -114,7 +114,7 @@ unsigned swar(uint32_t n) {
 unsigned swar(uint64_t n) {
 	n = n - ((n >> 1) & 0x5555555555555555);
 	n = (n & 0x3333333333333333) + ((n >> 2) & 0x3333333333333333);
-	n = (n + (n >> 4)) & 0xF0F0F0F0F0F0F0F;
+	n = (n + (n >> 4)) & 0xf0f0f0f0f0f0f0f;
 	return (n * 0x101010101010101) >> 56;
 }
 ```
@@ -124,3 +124,7 @@ unsigned swar(uint64_t n) {
 对一个字节的 256 种情况打标，然后逐字节加起来。有点没绷住。
 
 据说这是某些旧版及某些罕见平台上的 GCC 的实现。
+
+# 参考文献
+
+1. [Algorithms behind Popcount](https://nimrod.blog/posts/algorithms-behind-popcount/).
